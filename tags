@@ -288,6 +288,7 @@ PAYLOAD_DATA	usart.h	26;"	d
 PAYLOAD_DRE_vect	usart.h	17;"	d
 PAYLOAD_RXC_vect	usart.h	16;"	d
 PAYLOAD_USART	usart.h	12;"	d
+PER_10HZ	timer.h	4;"	d
 PGM_READ_BYTE	avr_compiler.h	123;"	d
 PGM_READ_WORD	avr_compiler.h	124;"	d
 PICMG_ID	ipmi.h	69;"	d
@@ -370,6 +371,7 @@ __GPIO_H__	gpio.h	2;"	d
 __IPMI_H__	ipmi.h	2;"	d
 __IRQ_H__	irq.h	2;"	d
 __TERMINAL_H__	terminal.h	2;"	d
+__TIMER_H__	timer.h	2;"	d
 __USART_H__	usart.h	2;"	d
 activate_firmware_req	ipmi.h	/^typedef struct activate_firmware_req {$/;"	s
 activate_firmware_req_t	ipmi.h	/^} activate_firmware_req_t ;$/;"	t	typeref:struct:activate_firmware_req
@@ -378,6 +380,7 @@ activate_firmware_resp_t	ipmi.h	/^} activate_firmware_resp_t ;$/;"	t	typeref:str
 address	boot.c	/^static unsigned long address = 0;$/;"	v	file:
 barrier	irq.h	6;"	d
 baudrate	usart.h	/^	uint32_t baudrate;$/;"	m	struct:__anon1
+block_number	ipmi.c	/^uint8_t block_number = 0;$/;"	v
 block_number	ipmi.h	/^	uint8_t block_number;$/;"	m	struct:upload_firmware_block_req
 boot_finish_write_flash	boot.c	/^boot_finish_write_flash(uint32_t size)$/;"	f
 boot_get_mode	boot.c	/^boot_get_mode(void)$/;"	f
@@ -461,6 +464,7 @@ ipmi_terminal_mode_request_t	ipmi.h	/^} ipmi_terminal_mode_request_t;$/;"	t	type
 ipmi_terminal_mode_response	ipmi.h	/^typedef struct ipmi_terminal_mode_response {$/;"	s
 ipmi_terminal_mode_response_t	ipmi.h	/^} ipmi_terminal_mode_response_t;$/;"	t	typeref:struct:ipmi_terminal_mode_response
 irqflags_t	irq.h	/^typedef uint8_t irqflags_t;$/;"	t
+lbolt	timer.c	/^unsigned long lbolt = 0;$/;"	v
 lun	ipmi.h	/^	uint8_t   lun;$/;"	m	struct:pkt_hdr
 lun	ipmi.h	/^	uint8_t lun:2,$/;"	m	struct:ipmi_terminal_mode_hdr
 main	main.c	/^main(void)$/;"	f
@@ -491,6 +495,8 @@ picmg_id	ipmi.h	/^	uint8_t picmg_id;$/;"	m	struct:upload_firmware_block_resp
 picmg_process_command	ipmi.c	/^picmg_process_command( ipmi_pkt_t *pkt )$/;"	f
 pkt_hdr	ipmi.h	/^typedef struct pkt_hdr {$/;"	s
 pkt_hdr_t	ipmi.h	/^} pkt_hdr_t;$/;"	t	typeref:struct:pkt_hdr
+print_boot_mode_menu	main.c	/^print_boot_mode_menu(void)$/;"	f
+print_boot_mode_msg	main.c	/^print_boot_mode_msg(uint8_t count)$/;"	f
 proc_console_bootmode	main.c	/^proc_console_bootmode(void)$/;"	f
 proc_payload_bootmode	main.c	/^proc_payload_bootmode(void)$/;"	f
 read_buffer	boot.c	/^uint8_t read_buffer[FLASH_PAGE_SIZE];$/;"	v
@@ -519,6 +525,13 @@ term_input_index	terminal.c	/^uint8_t term_input_index = 0;$/;"	v
 terminal_process	terminal.c	/^terminal_process(uint8_t *buf)$/;"	f
 terminal_process_work_list	terminal.c	/^terminal_process_work_list(void)$/;"	f
 terminal_send	terminal.c	/^terminal_send(unsigned char *pkt_out,  unsigned char len_out )$/;"	f
+timer_cfg_clk_src	timer.c	/^void timer_cfg_clk_src( volatile TC0_t * tc, TC_CLKSEL_t clockSelection )$/;"	f
+timer_cfg_wgm	timer.c	/^void timer_cfg_wgm( volatile TC0_t * tc, TC_WGMODE_t wgm )$/;"	f
+timer_clear_ovf_flag	timer.c	8;"	d	file:
+timer_init	timer.c	/^void timer_init(void)$/;"	f
+timer_set_count	timer.c	7;"	d	file:
+timer_set_ovf_int_lvl	timer.c	/^void timer_set_ovf_int_lvl( volatile TC0_t * tc, TC_OVFINTLVL_t intLevel )$/;"	f
+timer_set_period	timer.c	6;"	d	file:
 upgrade_action	ipmi.h	/^	uint8_t upgrade_action;$/;"	m	struct:initiate_upgrade_action_req
 upload_firmware_block_req	ipmi.h	/^typedef struct upload_firmware_block_req{$/;"	s
 upload_firmware_block_req_t	ipmi.h	/^} upload_firmware_block_req_t;$/;"	t	typeref:struct:upload_firmware_block_req

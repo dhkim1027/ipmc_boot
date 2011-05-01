@@ -14,6 +14,13 @@ picmg_hpm_initiate_upgrade_action( ipmi_pkt_t *pkt )
 	initiate_upgrade_action_req_t *req = ( initiate_upgrade_action_req_t *)pkt->req;
 	initiate_upgrade_action_resp_t *resp = ( initiate_upgrade_action_resp_t *)pkt->resp;
 
+	sendchar('i');
+	sendchar('n');
+	sendchar('i');
+	sendchar('t');
+	sendchar('\r');
+	sendchar('\n');
+
 	if(req->upgrade_action == HPM_UPGRADE_ACTION_UPGRADE){
 		boot_init_write_flash(APP_FW);
 		block_number = 0;
@@ -32,9 +39,15 @@ picmg_hpm_upload_firmware_block( ipmi_pkt_t *pkt )
 	upload_firmware_block_resp_t *resp = ( upload_firmware_block_resp_t *)pkt->resp;
 	uint8_t data_size = pkt->hdr.req_data_len - 2;
 
+
 	if(block_number != req->block_number){
 		resp->completion_code = 0x82;
 		pkt->hdr.resp_data_len = 1;
+
+		sendchar('E');
+		sendchar(block_number);
+		sendchar('\r');
+		sendchar('\n');
 		return;
 	}
 

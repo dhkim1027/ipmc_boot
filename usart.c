@@ -353,5 +353,10 @@ recvchar(void)
 void 
 d_sendchar(uint8_t ch)
 {
+	if(console_data == 0)
+		return;
+
+	while(usart_data_register_is_empty(console_data->usart)==0);
+	(console_data->usart)->DATA = ch;
 
 }

@@ -81,7 +81,8 @@ OBJDIR = .
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC = main.c
-SRC += clksys.c gpio.c usart.c eeprom_driver.c boot.c terminal.c ipmi.c
+SRC += clksys.c gpio.c timer.c usart.c eeprom_driver.c boot.c terminal.c ipmi.c
+
 #SRC += eeprom_driver.c serial.c clksys.c terminal.c ipmi.c boot.c
 
 # List C++ source files here. (C dependencies are automatically generated.)
