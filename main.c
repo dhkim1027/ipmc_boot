@@ -117,7 +117,7 @@ main(void)
 	CCPWrite( &PMIC.CTRL, temp);
 
 	sysclk_init();
-	gpio_init();
+//	gpio_init();
 	timer_init();
 	usart_init();
 

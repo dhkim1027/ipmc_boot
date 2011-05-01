@@ -10,6 +10,9 @@ static FILE mystdout = FDEV_SETUP_STREAM(debug_putchar, NULL,
 
 usart_data_t USART_data[MAX_BUF];
 
+usart_data_t * payload_data = 0;
+usart_data_t * console_data = 0;
+
 static inline void usart_set_mode(USART_t *_usart, USART_CMODE_t _usartmode)
 {
 	(_usart)->CTRLC = ((_usart)->CTRLC & (~USART_CMODE_gm)) | _usartmode;
@@ -151,6 +154,12 @@ uint8_t usart_putchar(USART_t *usart, uint8_t c)
 	return 1;
 }
 
+void
+usart_process_terminal(uint8_t data)
+{
+	
+}
+
 bool usart_rx_complete(uint8_t buf_type)
 {
 	usart_data_t * usart_data = &USART_data[buf_type];
@@ -163,6 +172,9 @@ bool usart_rx_complete(uint8_t buf_type)
 	/* Check for overflow. */
 	uint8_t tempRX_Tail = bufPtr->RX_Tail;
 	uint8_t data = usart_data->usart->DATA;
+
+	if(usart_data == payload_data)
+		usart_process_terminal(data);
 
 	if (tempRX_Head == tempRX_Tail) {
 		ans = false;
@@ -292,8 +304,6 @@ ISR(PAYLOAD_DRE_vect)
 	usart_data_reg_empty(PAYLOAD_DATA);
 }
 
-usart_data_t * payload_data = 0;
-usart_data_t * console_data = 0;
 
 void 
 usart_set_payload(uint8_t buf_type)
