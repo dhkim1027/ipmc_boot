@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "boot.h"
-#include "usart.h"
 #include "ipmi.h"
+#include "ws.h"
+#include "usart.h"
 
 uint8_t block_number = 0;
 
@@ -13,13 +14,6 @@ picmg_hpm_initiate_upgrade_action( ipmi_pkt_t *pkt )
 {
 	initiate_upgrade_action_req_t *req = ( initiate_upgrade_action_req_t *)pkt->req;
 	initiate_upgrade_action_resp_t *resp = ( initiate_upgrade_action_resp_t *)pkt->resp;
-
-	sendchar('i');
-	sendchar('n');
-	sendchar('i');
-	sendchar('t');
-	sendchar('\r');
-	sendchar('\n');
 
 	if(req->upgrade_action == HPM_UPGRADE_ACTION_UPGRADE){
 		boot_init_write_flash(APP_FW);
@@ -71,6 +65,7 @@ picmg_hpm_upload_firmware_block( ipmi_pkt_t *pkt )
 void
 picmg_hpm_finish_firmware_upload( ipmi_pkt_t *pkt )
 {
+	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
 	finish_firmware_upload_req_t *req = ( finish_firmware_upload_req_t *)pkt->req;
 	finish_firmware_upload_resp_t *resp = ( finish_firmware_upload_resp_t *)pkt->resp;
 	uint32_t image_length = 0;
@@ -89,12 +84,14 @@ picmg_hpm_finish_firmware_upload( ipmi_pkt_t *pkt )
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-	pkt->xport_completion_function = boot_jump_app_section;
+	ws->ipmi_completion_function = boot_jump_app_section;
+	//pkt->xport_completion_function = boot_jump_app_section;
 }
 
 void
 picmg_hpm_activate_firmware( ipmi_pkt_t *pkt )
 {
+	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
 	activate_firmware_req_t *req = ( activate_firmware_req_t *)pkt->req;
 	activate_firmware_resp_t *resp = ( activate_firmware_resp_t *)pkt->resp;
 
@@ -102,7 +99,8 @@ picmg_hpm_activate_firmware( ipmi_pkt_t *pkt )
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-	pkt->xport_completion_function = boot_reset_ipmc;
+	ws->ipmi_completion_function = boot_reset_ipmc;
+	//pkt->xport_completion_function = boot_reset_ipmc;
 }
 
 void
@@ -150,4 +148,32 @@ ipmi_process_request( ipmi_pkt_t *pkt )
 			pkt->hdr.resp_data_len = 0;
 			break;
 	}
+}
+
+void
+ipmi_process_pkt( ipmi_ws_t *ws )
+{
+	uint8_t i;
+	ipmi_pkt_t *pkt;
+
+	pkt = &ws->pkt;
+
+#if 0
+	sendchar('i');
+	sendchar('n');
+	sendchar(' ');
+	sendchar(':');
+
+	for(i=0;i<ws->len_in;i++){
+		sendchar(ws->pkt_in[i]);
+		ws->pkt_out[i] = ws->pkt_in[i];
+	}
+	ws->len_out = ws->len_in;
+
+	sendchar('\r');
+	sendchar('\n');
+#endif
+
+	ws_set_state( ws, WS_ACTIVE_MASTER_WRITE );
+
 }

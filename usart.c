@@ -1,15 +1,11 @@
 #include <avr/io.h>
 #include "irq.h"
 #include "clksys.h"
+#include "ipmi.h"
+#include "ws.h"
 #include "usart.h"
 
-#if 0
-static FILE mystdout = FDEV_SETUP_STREAM(debug_putchar, NULL,
-		               _FDEV_SETUP_WRITE);
-#endif
-
 usart_data_t USART_data[MAX_BUF];
-
 usart_data_t * payload_data = 0;
 usart_data_t * console_data = 0;
 
@@ -81,6 +77,8 @@ void usart_init_interrupt(uint8_t buf_type, USART_t * usart, USART_DREINTLVL_t d
 	usart_data->filter_type = 0;
 	usart_data->callback_fn = 0;
 	usart_data->data_ready = RX_DATA_STNBY;
+	usart_data->ws = 0;
+	usart_data->ws->len_rx = 0;
 }
 
 void usart_init_callback(uint8_t buf_type, uint8_t filter_type, void (*func)(uint8_t *))
@@ -90,7 +88,6 @@ void usart_init_callback(uint8_t buf_type, uint8_t filter_type, void (*func)(uin
 	usart_data->filter_type = filter_type;
 	usart_data->callback_fn = func;
 	usart_data->data_ready = RX_DATA_STNBY;
-
 }
 
 void usart_rx_int_level_set(USART_t * _usart, uint8_t _rxdIntLevel)
@@ -135,12 +132,10 @@ void usart_init(void)
 	tmp = usart_flush_data(CONSOLE_USART);
 	tmp = usart_flush_data(PAYLOAD_USART);
 
-//	stdout = &mystdout;
-
 	PMIC.CTRL |= PMIC_MEDLVLEX_bm;
-
 }
 
+#if 0
 uint8_t usart_getchar(USART_t *usart)
 {
 	while(usart_rx_is_complete(usart)==0);
@@ -153,6 +148,7 @@ uint8_t usart_putchar(USART_t *usart, uint8_t c)
 	(usart)->DATA = c;
 	return 1;
 }
+#endif
 
 void
 usart_process_terminal(uint8_t data)
@@ -164,6 +160,7 @@ bool usart_rx_complete(uint8_t buf_type)
 {
 	usart_data_t * usart_data = &USART_data[buf_type];
 	usart_buffer_t * bufPtr = &usart_data->buffer;
+	ipmi_ws_t *ws = 0;
 	bool ans;
 
 	/* Advance buffer head. */
@@ -173,8 +170,39 @@ bool usart_rx_complete(uint8_t buf_type)
 	uint8_t tempRX_Tail = bufPtr->RX_Tail;
 	uint8_t data = usart_data->usart->DATA;
 
-	if(usart_data == payload_data)
-		usart_process_terminal(data);
+	if(usart_data == payload_data){
+		if(usart_data->ws){
+			ws = usart_data->ws;
+
+			if(ws->len_rx >=  WS_BUF_LEN ){
+				ws_free( ws );
+				usart_data->ws = 0;
+				return false;
+			}
+
+			ws->rx_buf[ws->len_rx] = data;
+			ws->len_rx++;
+
+			if(data == LF){
+				ws_set_state( ws, WS_ACTIVE_IN );
+				usart_data->ws = 0;
+			}
+		}else{
+			if(data != '[')
+				return false;
+
+			usart_data->ws = ws_alloc();
+			if(!usart_data->ws){
+				return false;
+			}
+			ws = usart_data->ws;
+
+			ws->rx_buf[ws->len_rx] = data;
+			ws->len_rx++;
+		}
+			
+		return true;
+	}
 
 	if (tempRX_Head == tempRX_Tail) {
 		ans = false;
@@ -182,22 +210,6 @@ bool usart_rx_complete(uint8_t buf_type)
 		ans = true;
 		usart_data->buffer.RX[usart_data->buffer.RX_Head] = data;
 		usart_data->buffer.RX_Head = tempRX_Head;
-#if 0
-		if(usart_data->filter_type == FILTER_RAW){
-			usart_data->data_ready = RX_DATA_READY;	
-		}else{	// FILTER_TERM
-			usart_tx_buf_put_byte(buf_type, data);
-			if(data == CR){
-				usart_tx_buf_put_byte(buf_type, LF);
-
-				tempRX_Head = (bufPtr->RX_Head + 1) & USART_RX_BUFFER_MASK;
-				usart_data->buffer.RX[usart_data->buffer.RX_Head] = 0;
-				usart_data->buffer.RX_Head = tempRX_Head;
-					
-				usart_data->data_ready = RX_DATA_READY;	
-			}
-		}
-#endif
 	}
 	return ans;
 }
@@ -223,6 +235,7 @@ bool usart_rx_buf_data_available(uint8_t buf_type)
 	return (tempHead != tempTail);
 }
 
+#if 0
 bool usart_tx_buf_free_space(usart_data_t * usart_data)
 {
 	uint8_t tempHead = (usart_data->buffer.TX_Head + 1) & USART_TX_BUFFER_MASK;
@@ -257,6 +270,7 @@ bool usart_tx_buf_put_byte(uint8_t buf_type, uint8_t data)
 	}
 	return TXBuffer_FreeSpace;
 }
+#endif
 
 void usart_data_reg_empty(uint8_t buf_type)
 {

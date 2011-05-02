@@ -12,12 +12,12 @@
 #define APP_FW              0
 #define APP_BK              1
 
-#define PAYLOAD_BOOT_MODE	0x0
-#define CONSOLE_BOOT_MODE	0x1
-#define APP_MODE			0x2
+#define PAYLOAD_BOOT_MODE	0x1
+#define CONSOLE_BOOT_MODE	0x2
+#define APP_MODE			0x3
 
 #define BOOT_PAGE_ADDR	0
-#define BOOT_MODE_ADDR	0
+#define BOOT_MODE_ADDR	1
 
 void  boot_init(void);
 uint8_t boot_get_mode(void);

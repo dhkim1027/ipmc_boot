@@ -56,14 +56,19 @@ typedef struct{
 	uint8_t data_ready;
 	uint8_t filter_type;
 	void (*callback_fn)(uint8_t *);
+	ipmi_ws_t *ws;
 }usart_data_t;
 
 void usart_init(void);
+
+#if 0
 uint8_t usart_getchar(USART_t *usart);
 uint8_t usart_putchar(USART_t *usart, uint8_t c);
 
 bool usart_tx_buf_free_space(usart_data_t * usart_data);
 bool usart_tx_buf_put_byte(uint8_t buf_type, uint8_t data);
+#endif
+
 void usart_data_reg_empty(uint8_t buf_type);
 
 bool usart_rx_buf_data_available(uint8_t buf_type);

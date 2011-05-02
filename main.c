@@ -1,17 +1,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
+#include <util/delay.h>
 #include "irq.h"
 #include "clksys.h"
 #include "gpio.h"
 #include "timer.h"
+#include "ipmi.h"
+#include "ws.h"
 #include "usart.h"
 #include "sp_driver.h"
 #include "eeprom_driver.h"
 #include "boot.h"
 #include "terminal.h"
-
-extern unsigned long lbolt;
 
 void 
 print_boot_mode_msg(uint8_t count)
@@ -71,32 +72,108 @@ print_boot_mode_menu(void)
 	d_sendchar('W');	
 	d_sendchar('\r');	
 	d_sendchar('\n');	
+
+	//run application
+	d_sendchar('A');	
+	d_sendchar('-');	
+	d_sendchar('R');	
+	d_sendchar('u');	
+	d_sendchar('n');	
+	d_sendchar(' ');	
+	d_sendchar('A');	
+	d_sendchar('p');	
+	d_sendchar('p');	
+	d_sendchar('l');	
+	d_sendchar('i');	
+	d_sendchar('c');	
+	d_sendchar('a');	
+	d_sendchar('t');	
+	d_sendchar('i');	
+	d_sendchar('o');	
+	d_sendchar('n');	
+	d_sendchar('\r');	
+	d_sendchar('\n');	
+
+	// Exit
+	d_sendchar('E');	
+	d_sendchar('-');	
+	d_sendchar('E');	
+	d_sendchar('x');	
+	d_sendchar('i');	
+	d_sendchar('t');	
+	d_sendchar('\r');	
+	d_sendchar('\n');	
+
+	//Help
+	d_sendchar('H');	
+	d_sendchar('-');	
+	d_sendchar('H');	
+	d_sendchar('e');	
+	d_sendchar('l');	
+	d_sendchar('p');	
+	d_sendchar('\r');	
+	d_sendchar('\n');	
+}
+
+void 
+run_cli_boot_mode(void)
+{
+	uint8_t rx_data;
+	while(1){
+		if(!usart_rx_buf_data_available(CONSOLE_DATA))
+			continue;
+
+		rx_data = usart_rx_buf_get_byte(CONSOLE_DATA);
+		d_sendchar(rx_data);
+
+		switch(rx_data){
+			case 'A':
+				d_sendchar('g');
+				d_sendchar('o');
+				d_sendchar(' ');
+				d_sendchar('a');
+				d_sendchar('p');
+				d_sendchar('p');
+				d_sendchar('\r');
+				d_sendchar('\n');
+				boot_jump_app_section();
+				break;
+			case 'E':
+				d_sendchar('e');
+				d_sendchar('x');
+				d_sendchar('i ');
+				d_sendchar('t');
+				d_sendchar('\r');
+				d_sendchar('\n');
+				return;
+			case 'R':
+				d_sendchar('r');	
+				d_sendchar('e');	
+				d_sendchar('c');	
+				d_sendchar('o');	
+				d_sendchar('r');	
+				d_sendchar('v');	
+				d_sendchar('e');	
+				d_sendchar('r');	
+				d_sendchar('y');	
+				d_sendchar('\r');
+				d_sendchar('\n');
+				break;
+			case 'H':
+			default:
+				print_boot_mode_menu();
+				break;
+		}
+	}
 }
 
 void
-proc_payload_bootmode(void)
+proc_console_boot_mode(void)
 {
-	uint8_t rx_data;
-	usart_set_payload(PAYLOAD_DATA);
-	usart_set_console(CONSOLE_DATA);
-
-}
-
-void
-proc_console_bootmode(void)
-{
-	uint8_t rx_data;
 	usart_set_payload(CONSOLE_DATA);
-	usart_set_console(CONSOLE_DATA);
 
 	while(1){
-		terminal_process_work_list();
-#if 0
-		if(usart_rx_data_available()){
-			rx_data = recvchar();
-			sendchar(rx_data);
-		}
-#endif
+		ws_process_work_list();
 	}
 }
 
@@ -117,30 +194,33 @@ main(void)
 	CCPWrite( &PMIC.CTRL, temp);
 
 	sysclk_init();
+	ws_init();
 //	gpio_init();
 	timer_init();
 	usart_init();
+	usart_set_console(CONSOLE_DATA);
 
 	cpu_irq_enable();
 
 	boot_mode = boot_get_mode();
 
-	if(boot_mode == PAYLOAD_BOOT_MODE)
-		proc_payload_bootmode();
-
-	time = lbolt;
-
-#if 0
-	while(count){
-		if((time + HZ) < lbolt){
-			print_boot_mode_msg(count);
-			if(usart_rx_buf_data_available(CONSOLE_DATA))
-				break;
-			time = lbolt;
-			count--;
+	if(boot_mode == PAYLOAD_BOOT_MODE){
+		usart_set_payload(PAYLOAD_DATA);
+		while(1){
+			ws_process_work_list();
 		}
 	}
-#endif
+
+	while(count){
+		print_boot_mode_msg(count);
+		if(usart_rx_buf_data_available(CONSOLE_DATA))
+			break;
+		_delay_ms(1000);
+		count--;
+	}
+
+	if(count)
+		run_cli_boot_mode();
 
 	switch(boot_mode){
 		case APP_MODE:
@@ -148,7 +228,7 @@ main(void)
 			break;
 		case CONSOLE_BOOT_MODE:
 		default:
-			proc_console_bootmode();
+			proc_console_boot_mode();
 			break;
 	}
 
