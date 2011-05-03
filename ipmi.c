@@ -50,6 +50,7 @@ picmg_hpm_upload_firmware_block( ipmi_pkt_t *pkt )
 
 	resp->completion_code = CC_NORMAL;
 	resp->picmg_id = PICMG_ID;
+#if 0
 	resp->section_offset[0] = 0;
 	resp->section_offset[1] = 0;
 	resp->section_offset[2] = 0;
@@ -58,6 +59,7 @@ picmg_hpm_upload_firmware_block( ipmi_pkt_t *pkt )
 	resp->section_length[1] = 0;
 	resp->section_length[2] = 0;
 	resp->section_length[3] = 0;
+#endif
 
 	pkt->hdr.resp_data_len = 9;
 }
@@ -85,22 +87,20 @@ picmg_hpm_finish_firmware_upload( ipmi_pkt_t *pkt )
 
 	pkt->hdr.resp_data_len = 1;
 	ws->ipmi_completion_function = boot_jump_app_section;
-	//pkt->xport_completion_function = boot_jump_app_section;
 }
 
 void
 picmg_hpm_activate_firmware( ipmi_pkt_t *pkt )
 {
-	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
-	activate_firmware_req_t *req = ( activate_firmware_req_t *)pkt->req;
+//	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
+//	activate_firmware_req_t *req = ( activate_firmware_req_t *)pkt->req;
 	activate_firmware_resp_t *resp = ( activate_firmware_resp_t *)pkt->resp;
 
 	resp->completion_code = CC_NORMAL;
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-	ws->ipmi_completion_function = boot_reset_ipmc;
-	//pkt->xport_completion_function = boot_reset_ipmc;
+//	ws->ipmi_completion_function = boot_reset_ipmc;
 }
 
 void
@@ -148,32 +148,4 @@ ipmi_process_request( ipmi_pkt_t *pkt )
 			pkt->hdr.resp_data_len = 0;
 			break;
 	}
-}
-
-void
-ipmi_process_pkt( ipmi_ws_t *ws )
-{
-	uint8_t i;
-	ipmi_pkt_t *pkt;
-
-	pkt = &ws->pkt;
-
-#if 0
-	sendchar('i');
-	sendchar('n');
-	sendchar(' ');
-	sendchar(':');
-
-	for(i=0;i<ws->len_in;i++){
-		sendchar(ws->pkt_in[i]);
-		ws->pkt_out[i] = ws->pkt_in[i];
-	}
-	ws->len_out = ws->len_in;
-
-	sendchar('\r');
-	sendchar('\n');
-#endif
-
-	ws_set_state( ws, WS_ACTIVE_MASTER_WRITE );
-
 }

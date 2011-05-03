@@ -4,8 +4,6 @@
 #include <util/delay.h>
 #include "irq.h"
 #include "clksys.h"
-#include "gpio.h"
-#include "timer.h"
 #include "ipmi.h"
 #include "ws.h"
 #include "usart.h"
@@ -94,15 +92,27 @@ print_boot_mode_menu(void)
 	d_sendchar('\r');	
 	d_sendchar('\n');	
 
-	// Exit
-	d_sendchar('E');	
-	d_sendchar('-');	
-	d_sendchar('E');	
-	d_sendchar('x');	
-	d_sendchar('i');	
-	d_sendchar('t');	
-	d_sendchar('\r');	
-	d_sendchar('\n');	
+	//Programming Mode
+	d_sendchar('P');
+	d_sendchar('-');
+	d_sendchar('P');
+	d_sendchar('r');
+	d_sendchar('o');
+	d_sendchar('g');
+	d_sendchar('r');
+	d_sendchar('a');
+	d_sendchar('m');
+	d_sendchar('m');
+	d_sendchar('i');
+	d_sendchar('n');
+	d_sendchar('g');
+	d_sendchar(' ');
+	d_sendchar('M');
+	d_sendchar('o');
+	d_sendchar('d');
+	d_sendchar('e');
+	d_sendchar('\r');
+	d_sendchar('\n');
 
 	//Help
 	d_sendchar('H');	
@@ -115,77 +125,102 @@ print_boot_mode_menu(void)
 	d_sendchar('\n');	
 }
 
-void 
+uint8_t boot_mode;
+
+void
+print_cli_prompt(void)
+{
+	d_sendchar('b');
+	d_sendchar('o');
+	d_sendchar('o');
+	d_sendchar('t');
+	if(boot_mode == APP_MODE)
+		d_sendchar('A');
+	else if(boot_mode == PAYLOAD_BOOT_MODE)
+		d_sendchar('P');
+	else
+		d_sendchar('C');
+	d_sendchar('>');
+}
+
+uint8_t
 run_cli_boot_mode(void)
 {
 	uint8_t rx_data;
-	while(1){
-		if(!usart_rx_buf_data_available(CONSOLE_DATA))
-			continue;
 
-		rx_data = usart_rx_buf_get_byte(CONSOLE_DATA);
-		d_sendchar(rx_data);
+	if(!usart_rx_buf_data_available(CONSOLE_DATA))
+		return 1;
 
-		switch(rx_data){
-			case 'A':
-				d_sendchar('g');
-				d_sendchar('o');
-				d_sendchar(' ');
-				d_sendchar('a');
-				d_sendchar('p');
-				d_sendchar('p');
-				d_sendchar('\r');
-				d_sendchar('\n');
-				boot_jump_app_section();
-				break;
-			case 'E':
-				d_sendchar('e');
-				d_sendchar('x');
-				d_sendchar('i ');
-				d_sendchar('t');
-				d_sendchar('\r');
-				d_sendchar('\n');
-				return;
-			case 'R':
-				d_sendchar('r');	
-				d_sendchar('e');	
-				d_sendchar('c');	
-				d_sendchar('o');	
-				d_sendchar('r');	
-				d_sendchar('v');	
-				d_sendchar('e');	
-				d_sendchar('r');	
-				d_sendchar('y');	
-				d_sendchar('\r');
-				d_sendchar('\n');
-				break;
-			case 'H':
-			default:
-				print_boot_mode_menu();
-				break;
-		}
+	rx_data = usart_rx_buf_get_byte(CONSOLE_DATA);
+	d_sendchar(rx_data);
+	d_sendchar('\r');
+	d_sendchar('\n');
+
+	switch(rx_data){
+		case 'A':
+			d_sendchar('g');
+			d_sendchar('o');
+			d_sendchar(' ');
+			d_sendchar('a');
+			d_sendchar('p');
+			d_sendchar('p');
+			d_sendchar('\r');
+			d_sendchar('\n');
+			boot_jump_app_section();
+			break;
+		case 'P':
+			d_sendchar('P');
+			d_sendchar('r');
+			d_sendchar('o');
+			d_sendchar('g');
+			d_sendchar('r');
+			d_sendchar('a');
+			d_sendchar('m');
+			d_sendchar('m');
+			d_sendchar('i');
+			d_sendchar('n');
+			d_sendchar('g');
+			d_sendchar(' ');
+			d_sendchar('M');
+			d_sendchar('o');
+			d_sendchar('d');
+			d_sendchar('e');
+			d_sendchar('\r');
+			d_sendchar('\n');
+			return 2;
+		case 'R':
+			d_sendchar('r');	
+			d_sendchar('e');	
+			d_sendchar('c');	
+			d_sendchar('o');	
+			d_sendchar('r');	
+			d_sendchar('v');	
+			d_sendchar('e');	
+			d_sendchar('r');	
+			d_sendchar('y');	
+			d_sendchar('\r');
+			d_sendchar('\n');
+			break;
+		case 'H':
+		case 'h':
+			print_boot_mode_menu();
+			break;
+		default:
+			break;;
 	}
-}
-
-void
-proc_console_boot_mode(void)
-{
-	usart_set_payload(CONSOLE_DATA);
-
-	while(1){
-		ws_process_work_list();
-	}
+	print_cli_prompt();
+	d_sendchar('\r');
+	d_sendchar('\n');
+	return 0;
 }
 
 int 
 main(void)
 {
 	uint8_t temp;
-	uint8_t boot_mode;
-	unsigned long time;
-	uint8_t count = 3;
+	uint8_t count = 5;
 
-	EEPROM_FlushBuffer();
+//	EEPROM_FlushBuffer();
 	EEPROM_DisableMapping();
 	
 	cpu_irq_disable();
@@ -195,41 +230,52 @@ main(void)
 
 	sysclk_init();
 	ws_init();
-//	gpio_init();
-	timer_init();
 	usart_init();
 	usart_set_console(CONSOLE_DATA);
 
 	cpu_irq_enable();
 
+	d_sendchar('\r');
+	d_sendchar('\n');
+	d_sendchar('\r');
+	d_sendchar('\n');
+
 	boot_mode = boot_get_mode();
 
 	if(boot_mode == PAYLOAD_BOOT_MODE){
+		boot_set_mode(APP_MODE);
 		usart_set_payload(PAYLOAD_DATA);
+		print_cli_prompt();
 		while(1){
+			run_cli_boot_mode();
 			ws_process_work_list();
 		}
 	}
 
-	while(count){
-		print_boot_mode_msg(count);
-		if(usart_rx_buf_data_available(CONSOLE_DATA))
-			break;
-		_delay_ms(1000);
-		count--;
+	if(boot_mode == APP_MODE){
+		while(count){
+			print_boot_mode_msg(count);
+			if(usart_rx_buf_data_available(CONSOLE_DATA)){
+				d_sendchar('\r');
+				d_sendchar('\n');
+				break;
+			}
+			_delay_ms(1000);
+			count--;
+		}
+	}else{
+		count = 1;
 	}
 
-	if(count)
-		run_cli_boot_mode();
+	if(count){
+		print_cli_prompt();
+		while(run_cli_boot_mode() != 2);
+	}else
+		boot_jump_app_section();
 
-	switch(boot_mode){
-		case APP_MODE:
-			boot_jump_app_section();
-			break;
-		case CONSOLE_BOOT_MODE:
-		default:
-			proc_console_boot_mode();
-			break;
+	usart_set_payload(CONSOLE_DATA);
+	while(1){
+		ws_process_work_list();
 	}
 
 	return 0;

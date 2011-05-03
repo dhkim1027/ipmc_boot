@@ -1,6 +1,8 @@
 #ifndef __IPMI_H__
 #define __IPMI_H__
 
+//#define __DEBUG__
+
 #define TERM_MODE_REQ_MAX_DATA_LEN  25
 #define TERM_MODE_RESP_MAX_DATA_LEN 25
 
@@ -63,7 +65,7 @@ typedef struct ipmi_pkt {
 } ipmi_pkt_t;
 
 #define WS_ARRAY_SIZE   8
-#define WS_BUF_LEN 		40
+#define WS_BUF_LEN 		128
 
 typedef struct ipmi_ws {
 	uint32_t ws_state;
@@ -181,6 +183,5 @@ typedef struct activate_firmware_resp{
 
 
 void ipmi_process_request( ipmi_pkt_t *pkt );
-void ipmi_process_pkt( ipmi_ws_t *ws );
 
 #endif

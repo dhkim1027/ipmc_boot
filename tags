@@ -45,8 +45,8 @@ CC	Makefile	/^CC = avr-gcc$/;"	m
 CCPWrite	clksys.c	/^void CCPWrite( volatile uint8_t * address, uint8_t value )$/;"	f
 CCP_IOREG_gc	sp_driver.S	/^#define CCP_IOREG_gc (0xD8<<0)	\/\/ IO Register Protection$/;"	d
 CCP_SPM_gc	sp_driver.S	/^#define CCP_SPM_gc (0x9D<<0)	\/\/ SPM Instruction Protection$/;"	d
-CC_INVALID_CMD	ipmi.h	78;"	d
-CC_NORMAL	ipmi.h	77;"	d
+CC_INVALID_CMD	ipmi.h	83;"	d
+CC_NORMAL	ipmi.h	82;"	d
 CDEFS	Makefile	/^CDEFS = -DF_CPU=$(F_CPU)UL$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -g$(DEBUG)$/;"	m
 CN58_AMB_INT	gpio.h	20;"	d
@@ -69,7 +69,7 @@ COPY	Makefile	/^COPY = cp$/;"	m
 CPPDEFS	Makefile	/^CPPDEFS = -DF_CPU=$(F_CPU)UL$/;"	m
 CPPFLAGS	Makefile	/^CPPFLAGS = -g$(DEBUG)$/;"	m
 CPPSRC	Makefile	/^CPPSRC = $/;"	m
-CR	ipmi.h	7;"	d
+CR	ipmi.h	9;"	d
 CR	usart.h	33;"	d
 CSTANDARD	Makefile	/^CSTANDARD = -std=gnu99$/;"	m
 DEBUG	Makefile	/^DEBUG = dwarf-2$/;"	m
@@ -165,16 +165,16 @@ HANDLE_SW_bp	gpio.h	101;"	d
 HA_DIR	gpio.h	64;"	d
 HA_bp	gpio.h	63;"	d
 HEXSIZE	Makefile	/^HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex$/;"	m
-HPM_ACTIVATE_FIRMWARE	ipmi.h	160;"	d
-HPM_FINISH_FIRMWARE_UPLOAD	ipmi.h	143;"	d
-HPM_INITIATE_UPGRADE_ACTION	ipmi.h	98;"	d
-HPM_QUERY_SELFTEST_RESULT	ipmi.h	176;"	d
+HPM_ACTIVATE_FIRMWARE	ipmi.h	165;"	d
+HPM_FINISH_FIRMWARE_UPLOAD	ipmi.h	148;"	d
+HPM_INITIATE_UPGRADE_ACTION	ipmi.h	103;"	d
+HPM_QUERY_SELFTEST_RESULT	ipmi.h	181;"	d
 HPM_UPGRADE_ACTION_BACKUP	ipmi.h	/^	HPM_UPGRADE_ACTION_BACKUP = 0,$/;"	e	enum:eHpmfwupgUpgradeAction
 HPM_UPGRADE_ACTION_COMPARE	ipmi.h	/^	HPM_UPGRADE_ACTION_COMPARE,$/;"	e	enum:eHpmfwupgUpgradeAction
 HPM_UPGRADE_ACTION_INVALID	ipmi.h	/^	HPM_UPGRADE_ACTION_INVALID = 0xff$/;"	e	enum:eHpmfwupgUpgradeAction
 HPM_UPGRADE_ACTION_PREPARE	ipmi.h	/^	HPM_UPGRADE_ACTION_PREPARE,$/;"	e	enum:eHpmfwupgUpgradeAction
 HPM_UPGRADE_ACTION_UPGRADE	ipmi.h	/^	HPM_UPGRADE_ACTION_UPGRADE,$/;"	e	enum:eHpmfwupgUpgradeAction
-HPM_UPLOAD_FIRMWARE_BLOCK	ipmi.h	124;"	d
+HPM_UPLOAD_FIRMWARE_BLOCK	ipmi.h	129;"	d
 HZ	timer.h	5;"	d
 INLINE	avr_compiler.h	117;"	d
 INLINE	avr_compiler.h	138;"	d
@@ -216,7 +216,7 @@ ISR	usart.c	/^ISR(PAYLOAD_DRE_vect)$/;"	f
 ISR	usart.c	/^ISR(PAYLOAD_RXC_vect)$/;"	f
 JTAG_DEV	Makefile	/^JTAG_DEV = \/dev\/com1$/;"	m
 LDFLAGS	Makefile	/^LDFLAGS = -Wl,-Map=$(TARGET).map,--cref$/;"	m
-LF	ipmi.h	8;"	d
+LF	ipmi.h	10;"	d
 LF	usart.h	34;"	d
 LIBNAME	Makefile	/^LIBNAME=lib$(TARGET).a$/;"	m
 LST	Makefile	/^LST = $(SRC:%.c=$(OBJDIR)\/%.lst) $(CPPSRC:%.cpp=$(OBJDIR)\/%.lst) $(ASRC:%.S=$(OBJDIR)\/%.lst) $/;"	m
@@ -224,7 +224,7 @@ MAIN_TASK_EPILOGUE	avr_compiler.h	146;"	d
 MAIN_TASK_PROLOGUE	avr_compiler.h	143;"	d
 MATH_LIB	Makefile	/^MATH_LIB = $/;"	m
 MAX_BUF	usart.h	24;"	d
-MAX_FW_DATA_LEN	ipmi.h	125;"	d
+MAX_FW_DATA_LEN	ipmi.h	130;"	d
 MCU	Makefile	/^MCU = atxmega128a1$/;"	m
 MSG_ASSEMBLING	Makefile	/^MSG_ASSEMBLING = Assembling:$/;"	m
 MSG_BEGIN	Makefile	/^MSG_BEGIN = -------- begin --------$/;"	m
@@ -245,8 +245,8 @@ MSG_SIZE_BEFORE	Makefile	/^MSG_SIZE_BEFORE = Size before: $/;"	m
 MSG_SYMBOL_TABLE	Makefile	/^MSG_SYMBOL_TABLE = Creating Symbol Table:$/;"	m
 N48V_ALARM_DIR	gpio.h	78;"	d
 N48V_ALARM_bp	gpio.h	67;"	d
-NETFN_GROUP_EXTENSION_REQ	ipmi.h	80;"	d
-NETFN_GROUP_EXTENSION_RESP	ipmi.h	81;"	d
+NETFN_GROUP_EXTENSION_REQ	ipmi.h	85;"	d
+NETFN_GROUP_EXTENSION_RESP	ipmi.h	86;"	d
 NM	Makefile	/^NM = avr-nm$/;"	m
 NP4_AMB_INT	gpio.h	21;"	d
 NP4_AMB_INT_DIR	gpio.h	15;"	d
@@ -293,7 +293,7 @@ PAYLOAD_USART	usart.h	12;"	d
 PER_10HZ	timer.h	4;"	d
 PGM_READ_BYTE	avr_compiler.h	123;"	d
 PGM_READ_WORD	avr_compiler.h	124;"	d
-PICMG_ID	ipmi.h	83;"	d
+PICMG_ID	ipmi.h	88;"	d
 PRAGMA	avr_compiler.h	105;"	d
 PRINTF_LIB	Makefile	/^PRINTF_LIB = $/;"	m
 PRINTF_LIB_FLOAT	Makefile	/^PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt$/;"	m
@@ -352,8 +352,8 @@ SYSCLK_PORT_E	clksys.h	/^	SYSCLK_PORT_E,     $/;"	e	enum:sysclk_port_id
 SYSCLK_PORT_F	clksys.h	/^	SYSCLK_PORT_F,     $/;"	e	enum:sysclk_port_id
 SYSCLK_PORT_GEN	clksys.h	/^	SYSCLK_PORT_GEN,   $/;"	e	enum:sysclk_port_id
 TARGET	Makefile	/^TARGET = ipmc_boot$/;"	m
-TERM_MODE_REQ_MAX_DATA_LEN	ipmi.h	4;"	d
-TERM_MODE_RESP_MAX_DATA_LEN	ipmi.h	5;"	d
+TERM_MODE_REQ_MAX_DATA_LEN	ipmi.h	6;"	d
+TERM_MODE_RESP_MAX_DATA_LEN	ipmi.h	7;"	d
 TX	usart.h	/^	volatile uint8_t TX[USART_TX_BUFFER_SIZE];$/;"	m	struct:usart_buffer
 TX_Head	usart.h	/^	volatile uint8_t TX_Head;$/;"	m	struct:usart_buffer
 TX_Tail	usart.h	/^	volatile uint8_t TX_Tail;$/;"	m	struct:usart_buffer
@@ -366,19 +366,18 @@ USART_data	usart.c	/^usart_data_t USART_data[MAX_BUF];$/;"	v
 WINSHELL	Makefile	/^WINSHELL = cmd$/;"	m
 WS_ACTIVE_IN	ws.h	7;"	d
 WS_ACTIVE_IN_PENDING	ws.h	8;"	d
-WS_ACTIVE_MASTER_READ	ws.h	12;"	d
-WS_ACTIVE_MASTER_READ_PENDING	ws.h	13;"	d
 WS_ACTIVE_MASTER_WRITE	ws.h	9;"	d
 WS_ACTIVE_MASTER_WRITE_PENDING	ws.h	10;"	d
 WS_ACTIVE_MASTER_WRITE_SUCCESS	ws.h	11;"	d
-WS_ARRAY_SIZE	ipmi.h	64;"	d
-WS_BUF_LEN	ipmi.h	65;"	d
+WS_ARRAY_SIZE	ipmi.h	67;"	d
+WS_BUF_LEN	ipmi.h	68;"	d
 WS_FREE	ws.h	5;"	d
 WS_PENDING	ws.h	6;"	d
 _MEMATTR	avr_compiler.h	75;"	d
 _MEMATTR	avr_compiler.h	77;"	d
 __BOOT_H__	boot.h	2;"	d
 __CLKSYS_H__	clksys.h	2;"	d
+__DEBUG__	ipmi.h	4;"	d
 __GPIO_H__	gpio.h	2;"	d
 __IPMI_H__	ipmi.h	2;"	d
 __IRQ_H__	irq.h	2;"	d
@@ -484,6 +483,7 @@ irqflags_t	irq.h	/^typedef uint8_t irqflags_t;$/;"	t
 lbolt	timer.c	/^unsigned long lbolt = 0;$/;"	v
 len_in	ipmi.h	/^	uint8_t len_in;        \/* lenght of incoming pkt *\/$/;"	m	struct:ipmi_ws
 len_out	ipmi.h	/^	uint8_t len_out;       \/* length of outgoing pkt *\/$/;"	m	struct:ipmi_ws
+len_rx	ipmi.h	/^	uint8_t len_rx;$/;"	m	struct:ipmi_ws
 lun	ipmi.h	/^	uint8_t   lun;$/;"	m	struct:pkt_hdr
 lun	ipmi.h	/^	uint8_t lun:2,$/;"	m	struct:ipmi_terminal_mode_hdr
 main	main.c	/^main(void)$/;"	f
@@ -519,8 +519,7 @@ pkt_in	ipmi.h	/^	uint8_t pkt_in[WS_BUF_LEN];$/;"	m	struct:ipmi_ws
 pkt_out	ipmi.h	/^	uint8_t pkt_out[WS_BUF_LEN];$/;"	m	struct:ipmi_ws
 print_boot_mode_menu	main.c	/^print_boot_mode_menu(void)$/;"	f
 print_boot_mode_msg	main.c	/^print_boot_mode_msg(uint8_t count)$/;"	f
-proc_console_boot_mode	main.c	/^proc_console_boot_mode(void)$/;"	f
-proc_payload_boot_mode	main.c	/^proc_payload_boot_mode(void)$/;"	f
+print_cli_prompt	main.c	/^print_cli_prompt(void)$/;"	f
 read_buffer	boot.c	/^uint8_t read_buffer[FLASH_PAGE_SIZE];$/;"	v
 recvchar	usart.c	/^recvchar(void)$/;"	f
 req	ipmi.h	/^	ipmi_cmd_req_t  *req;$/;"	m	struct:ipmi_pkt
@@ -533,6 +532,8 @@ responder_lun	ipmi.h	/^	uint8_t       responder_lun;$/;"	m	struct:pkt_hdr
 responder_lun	ipmi.h	/^	uint8_t   responder_lun:2,$/;"	m	struct:ipmi_terminal_mode_response
 responder_lun	ipmi.h	/^	uint8_t responder_lun:2,$/;"	m	struct:ipmi_terminal_mode_request
 rollback_override	ipmi.h	/^	uint8_t rollback_override;$/;"	m	struct:activate_firmware_req
+run_cli_boot_mode	main.c	/^run_cli_boot_mode(void)$/;"	f
+rx_buf	ipmi.h	/^	uint8_t rx_buf[WS_BUF_LEN];$/;"	m	struct:ipmi_ws
 section_length	ipmi.h	/^	uint8_t section_length[4];$/;"	m	struct:upload_firmware_block_resp
 section_offset	ipmi.h	/^	uint8_t section_offset[4];$/;"	m	struct:upload_firmware_block_resp
 sei	avr_compiler.h	107;"	d
@@ -559,32 +560,26 @@ upload_firmware_block_resp_t	ipmi.h	/^} upload_firmware_block_resp_t;$/;"	t	type
 usart	usart.h	/^	USART_t * usart;$/;"	m	struct:__anon2
 usart_buffer	usart.h	/^typedef struct usart_buffer{ $/;"	s
 usart_buffer_t	usart.h	/^}usart_buffer_t;$/;"	t	typeref:struct:usart_buffer
-usart_data_reg_empty	usart.c	/^void usart_data_reg_empty(uint8_t buf_type)$/;"	f
+usart_data_reg_empty	usart.c	/^usart_data_reg_empty(uint8_t buf_type)$/;"	f
 usart_data_register_is_empty	usart.c	/^static inline uint8_t usart_data_register_is_empty(USART_t *_usart)$/;"	f	file:
 usart_data_t	usart.h	/^}usart_data_t;$/;"	t	typeref:struct:__anon2
 usart_flush_data	usart.c	/^uint8_t usart_flush_data(USART_t *usart)$/;"	f
-usart_format_set	usart.c	/^static inline void usart_format_set(USART_t *_usart, USART_CHSIZE_t _charSize, USART_PMODE_t _parityMode, uint8_t _twoStopBits)$/;"	f	file:
-usart_init	usart.c	/^void usart_init(void)$/;"	f
-usart_init_callback	usart.c	/^void usart_init_callback(uint8_t buf_type, uint8_t filter_type, void (*func)(uint8_t *))$/;"	f
+usart_init	usart.c	/^usart_init(void)$/;"	f
 usart_init_interrupt	usart.c	/^void usart_init_interrupt(uint8_t buf_type, USART_t * usart, USART_DREINTLVL_t dreIntLevel)$/;"	f
 usart_init_rs232	usart.c	/^void usart_init_rs232(USART_t *usart, const usart_rs232_options_t *opt)$/;"	f
-usart_process_terminal	usart.c	/^usart_process_terminal(uint8_t data)$/;"	f
 usart_rs232_options_t	usart.h	/^}usart_rs232_options_t;$/;"	t	typeref:struct:__anon1
 usart_rx_buf_data_available	usart.c	/^bool usart_rx_buf_data_available(uint8_t buf_type)$/;"	f
 usart_rx_buf_get_byte	usart.c	/^uint8_t usart_rx_buf_get_byte(uint8_t buf_type)$/;"	f
 usart_rx_complete	usart.c	/^bool usart_rx_complete(uint8_t buf_type)$/;"	f
 usart_rx_data_available	usart.c	/^usart_rx_data_available(void)$/;"	f
-usart_rx_enable	usart.c	/^static inline void usart_rx_enable(USART_t *_usart)$/;"	f	file:
-usart_rx_int_level_set	usart.c	/^void usart_rx_int_level_set(USART_t * _usart, uint8_t _rxdIntLevel)$/;"	f
 usart_rx_is_complete	usart.c	/^uint8_t usart_rx_is_complete(USART_t *_usart)$/;"	f
 usart_set_baudrate	usart.c	/^void usart_set_baudrate(USART_t *usart, uint32_t baud, uint32_t cpu_hz)$/;"	f
 usart_set_console	usart.c	/^usart_set_console(uint8_t buf_type)$/;"	f
-usart_set_mode	usart.c	/^static inline void usart_set_mode(USART_t *_usart, USART_CMODE_t _usartmode)$/;"	f	file:
 usart_set_payload	usart.c	/^usart_set_payload(uint8_t buf_type)$/;"	f
-usart_tx_enable	usart.c	/^static inline void usart_tx_enable(USART_t *_usart)$/;"	f	file:
 watchdog_reset	avr_compiler.h	114;"	d
 write_buffer	boot.c	/^uint8_t write_buffer[FLASH_PAGE_SIZE];$/;"	v
 write_buffer_count	boot.c	/^static uint32_t write_buffer_count = 0;$/;"	v	file:
+ws	ipmi.h	/^	char        *ws;$/;"	m	struct:pkt_hdr
 ws	usart.h	/^	ipmi_ws_t *ws;$/;"	m	struct:__anon2
 ws_alloc	ws.c	/^ws_alloc( void )$/;"	f
 ws_array	ws.c	/^ipmi_ws_t   ws_array[WS_ARRAY_SIZE];$/;"	v

@@ -19,15 +19,11 @@
 #define BOOT_PAGE_ADDR	0
 #define BOOT_MODE_ADDR	1
 
-void  boot_init(void);
 uint8_t boot_get_mode(void);
 void  boot_set_mode(uint8_t mode);
 void  boot_init_write_flash(uint8_t section);
 void  boot_write_flash(uint8_t *data, uint32_t size);
 void  boot_finish_write_flash(uint32_t size);
 void  boot_jump_app_section(void);
-void  boot_reset_ipmc(void);
-
-
 
 #endif

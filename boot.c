@@ -14,12 +14,6 @@ static uint32_t page_num = 0;
 static uint32_t bytecount = 0;
 static uint32_t write_buffer_count = 0;
 
-void  
-boot_init(void)
-{
-
-}
-
 uint8_t 
 boot_get_mode(void)
 {
@@ -104,10 +98,4 @@ boot_jump_app_section(void)
 	CCPWrite( &PMIC.CTRL, temp);
 
 	funcptr();
-}
-
-void  
-boot_reset_ipmc(void)
-{
-
 }

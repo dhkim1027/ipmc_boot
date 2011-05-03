@@ -9,29 +9,9 @@ usart_data_t USART_data[MAX_BUF];
 usart_data_t * payload_data = 0;
 usart_data_t * console_data = 0;
 
-static inline void usart_set_mode(USART_t *_usart, USART_CMODE_t _usartmode)
-{
-	(_usart)->CTRLC = ((_usart)->CTRLC & (~USART_CMODE_gm)) | _usartmode;
-}
-
-static inline void usart_format_set(USART_t *_usart, USART_CHSIZE_t _charSize, USART_PMODE_t _parityMode, uint8_t _twoStopBits)
-{
-	(_usart)->CTRLC = (uint8_t) _charSize | _parityMode | (_twoStopBits ? USART_SBMODE_bm : 0);
-}
-
 static inline uint8_t usart_data_register_is_empty(USART_t *_usart)
 {
 	return (_usart)->STATUS & USART_DREIF_bm;
-}
-
-static inline void usart_tx_enable(USART_t *_usart)
-{
-	(_usart)->CTRLB |= USART_TXEN_bm;
-}
-
-static inline void usart_rx_enable(USART_t *_usart)
-{
-	(_usart)->CTRLB |= USART_RXEN_bm;
 }
 
 uint8_t usart_rx_is_complete(USART_t *_usart)
@@ -47,20 +27,18 @@ uint8_t usart_flush_data(USART_t *usart)
 void usart_set_baudrate(USART_t *usart, uint32_t baud, uint32_t cpu_hz)
 {
 	uint16_t bsel_value = (uint16_t) ((((((cpu_hz)<<1)/(baud*16))+1)>>1)-1);
-	// No double transmission speed^M
 	(usart)->CTRLB &= ~USART_CLK2X_bm;
-	// BSALE not used, BSCALE = 0
 	(usart)->BAUDCTRLB = (uint8_t) ((~USART_BSCALE_gm)&(bsel_value>>8));
 	(usart)->BAUDCTRLA = (uint8_t) (bsel_value);
 }
 
 void usart_init_rs232(USART_t *usart, const usart_rs232_options_t *opt)
 {
-	usart_set_mode(usart,USART_CMODE_ASYNCHRONOUS_gc);
-	usart_format_set(usart, opt->charlength, opt->paritytype, opt->stopbits);
+	(usart)->CTRLC = ((usart)->CTRLC & (~USART_CMODE_gm)) | USART_CMODE_ASYNCHRONOUS_gc;
+	(usart)->CTRLC = (uint8_t) opt->charlength | opt->paritytype | (opt->stopbits ? USART_SBMODE_bm : 0);
 	usart_set_baudrate(usart, opt->baudrate, F_CPU);
-	usart_tx_enable(usart);
-	usart_rx_enable(usart);
+	(usart)->CTRLB |= USART_TXEN_bm;
+	(usart)->CTRLB |= USART_RXEN_bm;
 }
 
 void usart_init_interrupt(uint8_t buf_type, USART_t * usart, USART_DREINTLVL_t dreIntLevel)
@@ -81,36 +59,16 @@ void usart_init_interrupt(uint8_t buf_type, USART_t * usart, USART_DREINTLVL_t d
 	usart_data->ws->len_rx = 0;
 }
 
-void usart_init_callback(uint8_t buf_type, uint8_t filter_type, void (*func)(uint8_t *))
-{
-	usart_data_t * usart_data = &USART_data[buf_type];
-
-	usart_data->filter_type = filter_type;
-	usart_data->callback_fn = func;
-	usart_data->data_ready = RX_DATA_STNBY;
-}
-
-void usart_rx_int_level_set(USART_t * _usart, uint8_t _rxdIntLevel)
-{
-	(_usart)->CTRLA = ((_usart)->CTRLA & ~USART_RXCINTLVL_gm) | _rxdIntLevel;
-}
-
-
-void usart_init(void)
+void 
+usart_init(void)
 {
 	static usart_rs232_options_t usart_opt;
-	static usart_rs232_options_t payload_usart_opt;
 	uint8_t tmp;
 
 	usart_opt.baudrate 		= USART_BAUDRATE;
 	usart_opt.charlength 	= USART_CHSIZE_8BIT_gc;
 	usart_opt.paritytype	= USART_PMODE_DISABLED_gc;
 	usart_opt.stopbits 		= 0;
-
-	payload_usart_opt.baudrate 		= USART_BAUDRATE;
-	payload_usart_opt.charlength 	= USART_CHSIZE_8BIT_gc;
-	payload_usart_opt.paritytype	= USART_PMODE_DISABLED_gc;
-	payload_usart_opt.stopbits 		= 0;
 
 	PORTC.DIRCLR |= PIN6_bm;
 	PORTC.DIRSET |= PIN7_bm;
@@ -123,10 +81,10 @@ void usart_init(void)
 	usart_init_interrupt(PAYLOAD_DATA, PAYLOAD_USART, USART_DREINTLVL_LO_gc);
 
 	usart_init_rs232(CONSOLE_USART, &usart_opt);
-	usart_init_rs232(PAYLOAD_USART, &payload_usart_opt);
+	usart_init_rs232(PAYLOAD_USART, &usart_opt);
 
-	usart_rx_int_level_set(CONSOLE_USART, USART_RXCINTLVL_MED_gc);
-	usart_rx_int_level_set(PAYLOAD_USART, USART_RXCINTLVL_MED_gc);
+	(CONSOLE_USART)->CTRLA = ((CONSOLE_USART)->CTRLA & ~USART_RXCINTLVL_gm) | USART_RXCINTLVL_MED_gc;
+	(PAYLOAD_USART)->CTRLA = ((PAYLOAD_USART)->CTRLA & ~USART_RXCINTLVL_gm) | USART_RXCINTLVL_MED_gc;
 
 	// dummy data
 	tmp = usart_flush_data(CONSOLE_USART);
@@ -135,33 +93,12 @@ void usart_init(void)
 	PMIC.CTRL |= PMIC_MEDLVLEX_bm;
 }
 
-#if 0
-uint8_t usart_getchar(USART_t *usart)
-{
-	while(usart_rx_is_complete(usart)==0);
-	return ((uint16_t)(usart)->DATA);
-}
-
-uint8_t usart_putchar(USART_t *usart, uint8_t c)
-{
-	while(usart_data_register_is_empty(usart)==0);
-	(usart)->DATA = c;
-	return 1;
-}
-#endif
-
-void
-usart_process_terminal(uint8_t data)
-{
-	
-}
-
-bool usart_rx_complete(uint8_t buf_type)
+uint8_t usart_rx_complete(uint8_t buf_type)
 {
 	usart_data_t * usart_data = &USART_data[buf_type];
 	usart_buffer_t * bufPtr = &usart_data->buffer;
 	ipmi_ws_t *ws = 0;
-	bool ans;
+	uint8_t ans;
 
 	/* Advance buffer head. */
 	uint8_t tempRX_Head = (bufPtr->RX_Head + 1) & USART_RX_BUFFER_MASK;
@@ -171,13 +108,16 @@ bool usart_rx_complete(uint8_t buf_type)
 	uint8_t data = usart_data->usart->DATA;
 
 	if(usart_data == payload_data){
+#ifdef __DEBUG__
+		d_sendchar(data);
+#endif
 		if(usart_data->ws){
 			ws = usart_data->ws;
 
 			if(ws->len_rx >=  WS_BUF_LEN ){
 				ws_free( ws );
 				usart_data->ws = 0;
-				return false;
+				return 0;
 			}
 
 			ws->rx_buf[ws->len_rx] = data;
@@ -189,11 +129,11 @@ bool usart_rx_complete(uint8_t buf_type)
 			}
 		}else{
 			if(data != '[')
-				return false;
+				return 0;
 
 			usart_data->ws = ws_alloc();
 			if(!usart_data->ws){
-				return false;
+				return 0;
 			}
 			ws = usart_data->ws;
 
@@ -201,13 +141,13 @@ bool usart_rx_complete(uint8_t buf_type)
 			ws->len_rx++;
 		}
 			
-		return true;
+		return 1;
 	}
 
 	if (tempRX_Head == tempRX_Tail) {
-		ans = false;
+		ans = 0;
 	}else{
-		ans = true;
+		ans = 1;
 		usart_data->buffer.RX[usart_data->buffer.RX_Head] = data;
 		usart_data->buffer.RX_Head = tempRX_Head;
 	}
@@ -226,7 +166,8 @@ uint8_t usart_rx_buf_get_byte(uint8_t buf_type)
 	return ans;
 }
 
-bool usart_rx_buf_data_available(uint8_t buf_type)
+uint8_t
+usart_rx_buf_data_available(uint8_t buf_type)
 {
 	usart_data_t * usart_data = &USART_data[buf_type];
 	uint8_t tempHead = usart_data->buffer.RX_Head;
@@ -235,44 +176,8 @@ bool usart_rx_buf_data_available(uint8_t buf_type)
 	return (tempHead != tempTail);
 }
 
-#if 0
-bool usart_tx_buf_free_space(usart_data_t * usart_data)
-{
-	uint8_t tempHead = (usart_data->buffer.TX_Head + 1) & USART_TX_BUFFER_MASK;
-	uint8_t tempTail = usart_data->buffer.TX_Tail;
-
-	return (tempHead != tempTail);
-}
-
-
-bool usart_tx_buf_put_byte(uint8_t buf_type, uint8_t data)
-{
-	usart_data_t * usart_data = &USART_data[buf_type];
-	uint8_t tempCTRLA;
-	uint8_t tempTX_Head;
-	bool TXBuffer_FreeSpace;
-	usart_buffer_t * TXbufPtr;
-
-	TXbufPtr = &usart_data->buffer;
-	TXBuffer_FreeSpace = usart_tx_buf_free_space(usart_data);
-
-	if(TXBuffer_FreeSpace)
-	{
-		tempTX_Head = TXbufPtr->TX_Head;
-		TXbufPtr->TX[tempTX_Head]= data;
-		/* Advance buffer head. */
-		TXbufPtr->TX_Head = (tempTX_Head + 1) & USART_TX_BUFFER_MASK;
-
-		/* Enable DRE interrupt. */
-		tempCTRLA = usart_data->usart->CTRLA;
-		tempCTRLA = (tempCTRLA & ~USART_DREINTLVL_gm) | usart_data->dreIntLevel;
-		usart_data->usart->CTRLA = tempCTRLA;
-	}
-	return TXBuffer_FreeSpace;
-}
-#endif
-
-void usart_data_reg_empty(uint8_t buf_type)
+void 
+usart_data_reg_empty(uint8_t buf_type)
 {
 	usart_data_t * usart_data = &USART_data[buf_type];
 	usart_buffer_t * bufPtr;
@@ -339,22 +244,6 @@ sendchar(uint8_t ch)
 
 	while(usart_data_register_is_empty(payload_data->usart)==0);
 	(payload_data->usart)->DATA = ch;
-}
-
-bool 
-usart_rx_data_available(void)
-{
-	uint8_t tempHead ;
-	uint8_t tempTail ;
-
-	if(payload_data == 0)
-		return 0;
-
-	tempHead = payload_data->buffer.RX_Head;
-	tempTail = payload_data->buffer.RX_Tail;
-
-	return (tempHead != tempTail);
-
 }
 
 uint8_t 

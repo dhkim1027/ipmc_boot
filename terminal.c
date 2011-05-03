@@ -22,14 +22,16 @@ terminal_process_pkt( ipmi_ws_t *ws )
 	int count = 0;
 	int buf_len;
 	uint8_t val;
-	int i;
+#ifdef __DEBUG__
 	char hex_chars[16] ;
+	int i;
 
 	for(i=0;i<10;i++)
 		hex_chars[i] = '0' + i;
 
 	for(i=10;i<16;i++)
 		hex_chars[i] = 'A' + (i-10);
+#endif
 
 
 	/* first character must be '[' */
@@ -104,6 +106,20 @@ terminal_process_pkt( ipmi_ws_t *ws )
 				ws_free( ws );
 				return;
 			}
+
+#ifdef __DEBUG__
+			d_sendchar('i');
+			d_sendchar(':');
+			for(i=0;i<count;i++){
+				nibble[0] = ws->pkt_in[i] >> 4;
+				nibble[1] = ws->pkt_in[i] & 0x0f;
+
+				d_sendchar(hex_chars[nibble[0]]);
+				d_sendchar(hex_chars[nibble[1]]);
+			}
+			d_sendchar('\r');
+			d_sendchar('\n');
+#endif
 
 			ipmi_process_request( pkt );
 

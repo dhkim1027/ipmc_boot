@@ -1,8 +1,8 @@
 #ifndef __USART_H__
 #define __USART_H__
 
-#include <stdio.h>
-#include <stdbool.h>
+//#include <stdio.h>
+//#include <stdbool.h>
 
 #define USART_BAUDRATE		38400 
 #define CONSOLE_BAUDRATE	USART_BAUDRATE
@@ -61,23 +61,14 @@ typedef struct{
 
 void usart_init(void);
 
-#if 0
-uint8_t usart_getchar(USART_t *usart);
-uint8_t usart_putchar(USART_t *usart, uint8_t c);
-
-bool usart_tx_buf_free_space(usart_data_t * usart_data);
-bool usart_tx_buf_put_byte(uint8_t buf_type, uint8_t data);
-#endif
-
 void usart_data_reg_empty(uint8_t buf_type);
 
-bool usart_rx_buf_data_available(uint8_t buf_type);
+uint8_t usart_rx_buf_data_available(uint8_t buf_type);
 uint8_t usart_rx_buf_get_byte(uint8_t buf_type);
-bool usart_rx_complete(uint8_t buf_type);
+uint8_t usart_rx_complete(uint8_t buf_type);
 
 void usart_set_payload(uint8_t buf_type);
 void usart_set_console(uint8_t buf_type);
-bool usart_rx_data_available(void);
 void sendchar(uint8_t ch);
 uint8_t recvchar(void);
 void d_sendchar(uint8_t ch);
