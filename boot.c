@@ -27,20 +27,23 @@ boot_set_mode(uint8_t mode)
 }
 
 void  
-boot_init_write_flash(uint8_t section)
+boot_init_write_flash(void)
 {
-	page_num = 0;
+	uint8_t fw_type ;
+
 	bytecount = 0;
 	write_buffer_count = 0;
 
+	fw_type = EEPROM_ReadByte(0, BOOT_FW_TYPE_ADDR);
+
 	memset(write_buffer, 0xff, FLASH_PAGE_SIZE);
 
-	if(section == APP_FW){		// Application Firmware
-		address = APP_FW_START;
-	}else if(section == APP_BK){	// Application Firmware Backup
-		address = APP_BK_START;
+	if(fw_type == FW_TYPE_APP){		// Application Firmware
+		page_num = APP_BLK_START;
+	}else if(fw_type == FW_TYPE_BACKUP){	// Application Firmware Backup
+		page_num = BACKUP_BLK_START;
 	}else{
-
+		page_num = APP_BLK_START;
 	}
 }
 
@@ -65,7 +68,6 @@ boot_write_flash(uint8_t *data, uint32_t size)
 
 		write_buffer_count++;
 		bytecount++;
-		address++;
 	}
 }
 
@@ -98,4 +100,53 @@ boot_jump_app_section(void)
 	CCPWrite( &PMIC.CTRL, temp);
 
 	funcptr();
+}
+
+void  
+boot_recovery_fw(void)
+{
+	unsigned long i;
+	for(i=BACKUP_BLK_START;i<BACKUP_BLK_END;i++){
+		SP_ReadFlashPage(read_buffer, i * FLASH_PAGE_SIZE);
+
+		SP_LoadFlashPage(read_buffer);
+		SP_EraseWriteApplicationPage((i - BACKUP_BLK_START) * FLASH_PAGE_SIZE);
+		SP_WaitForSPM();
+
+		d_sendchar('#');
+	}
+	d_sendchar('\r');
+	d_sendchar('\n');
+
+	d_sendchar('c');
+	d_sendchar('o');
+	d_sendchar('m');
+	d_sendchar('p');
+	d_sendchar('l');
+	d_sendchar('e');
+	d_sendchar('t');
+	d_sendchar('e');
+	d_sendchar('.');
+	d_sendchar('\r');
+	d_sendchar('\n');
+}
+
+void  
+boot_erase_flash(uint8_t fw_type)
+{
+	uint32_t page_start, page_end;
+	uint32_t i;
+
+	if(fw_type == FW_TYPE_APP){
+		page_start = APP_BLK_START;	
+		page_end   = APP_BLK_END;	
+	}else{
+		page_start = BACKUP_BLK_START;	
+		page_end   = BACKUP_BLK_END;	
+	}
+
+	for(i=page_start;i<page_end;i++){
+		SP_EraseApplicationPage(i * FLASH_PAGE_SIZE);
+		SP_WaitForSPM();
+	}
 }

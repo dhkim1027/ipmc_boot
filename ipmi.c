@@ -16,7 +16,7 @@ picmg_hpm_initiate_upgrade_action( ipmi_pkt_t *pkt )
 	initiate_upgrade_action_resp_t *resp = ( initiate_upgrade_action_resp_t *)pkt->resp;
 
 	if(req->upgrade_action == HPM_UPGRADE_ACTION_UPGRADE){
-		boot_init_write_flash(APP_FW);
+		boot_init_write_flash();
 		block_number = 0;
 	}
 
@@ -81,26 +81,26 @@ picmg_hpm_finish_firmware_upload( ipmi_pkt_t *pkt )
 	image_length |= req->image_length[0];
 
 	boot_finish_write_flash(image_length);
+	boot_set_mode(APP_MODE);
 
 	resp->completion_code = CC_NORMAL;
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-	ws->ipmi_completion_function = boot_jump_app_section;
+//	ws->ipmi_completion_function = boot_jump_app_section;
 }
 
 void
 picmg_hpm_activate_firmware( ipmi_pkt_t *pkt )
 {
-//	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
-//	activate_firmware_req_t *req = ( activate_firmware_req_t *)pkt->req;
+	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
 	activate_firmware_resp_t *resp = ( activate_firmware_resp_t *)pkt->resp;
 
 	resp->completion_code = CC_NORMAL;
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-//	ws->ipmi_completion_function = boot_reset_ipmc;
+	ws->ipmi_completion_function = boot_jump_app_section;
 }
 
 void

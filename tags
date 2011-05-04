@@ -10,23 +10,12 @@ ALL_ASFLAGS	Makefile	/^ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(AS
 ALL_CFLAGS	Makefile	/^ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)$/;"	m
 ALL_CPPFLAGS	Makefile	/^ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS)$/;"	m
 APPTABLE_SECTION_START	sp_driver.h	77;"	d
-APP_BK	boot.h	13;"	d
-APP_BK_END	boot.h	11;"	d
-APP_BK_START	boot.h	10;"	d
-APP_END	boot.h	7;"	d
-APP_FW	boot.h	12;"	d
-APP_FW_END	boot.h	9;"	d
-APP_FW_START	boot.h	8;"	d
-APP_MODE	boot.h	17;"	d
+APP_BLK_END	boot.h	16;"	d
+APP_BLK_START	boot.h	15;"	d
+APP_MODE	boot.h	23;"	d
 AR	Makefile	/^AR = avr-ar rcs$/;"	m
 ASFLAGS	Makefile	/^ASFLAGS = $(ADEFS) -Wa,-adhlns=$(<:%.S=$(OBJDIR)\/%.lst),-gstabs,--listing-cont-lines=100$/;"	m
 ASRC	Makefile	/^ASRC = sp_driver.S$/;"	m
-ATC250_CNTL1_DIR	gpio.h	79;"	d
-ATC250_CNTL1_bp	gpio.h	68;"	d
-ATC250_CNTL2_DIR	gpio.h	80;"	d
-ATC250_CNTL2_bp	gpio.h	69;"	d
-ATC250_CNTL3_DIR	gpio.h	81;"	d
-ATC250_CNTL3_bp	gpio.h	70;"	d
 AVRDUDE	Makefile	/^AVRDUDE = avrdude$/;"	m
 AVRDUDE_FLAGS	Makefile	/^AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)$/;"	m
 AVRDUDE_PORT	Makefile	/^AVRDUDE_PORT = com1    # programmer connected to serial device$/;"	m
@@ -36,11 +25,11 @@ AVR_ENTER_CRITICAL_REGION	avr_compiler.h	59;"	d
 AVR_ENTER_CRITICAL_REGION	irq.h	10;"	d
 AVR_LEAVE_CRITICAL_REGION	avr_compiler.h	65;"	d
 AVR_LEAVE_CRITICAL_REGION	irq.h	13;"	d
-BD_POWER_OFF	gpio.h	38;"	d
-BD_POWER_OFF_DIR	gpio.h	37;"	d
-BD_POWER_OFF_bp	gpio.h	30;"	d
-BOOT_MODE_ADDR	boot.h	20;"	d
-BOOT_PAGE_ADDR	boot.h	19;"	d
+BACKUP_BLK_END	boot.h	18;"	d
+BACKUP_BLK_START	boot.h	17;"	d
+BOOT_FW_TYPE_ADDR	boot.h	32;"	d
+BOOT_MODE_ADDR	boot.h	31;"	d
+BOOT_PAGE_ADDR	boot.h	29;"	d
 CC	Makefile	/^CC = avr-gcc$/;"	m
 CCPWrite	clksys.c	/^void CCPWrite( volatile uint8_t * address, uint8_t value )$/;"	f
 CCP_IOREG_gc	sp_driver.S	/^#define CCP_IOREG_gc (0xD8<<0)	\/\/ IO Register Protection$/;"	d
@@ -49,18 +38,12 @@ CC_INVALID_CMD	ipmi.h	83;"	d
 CC_NORMAL	ipmi.h	82;"	d
 CDEFS	Makefile	/^CDEFS = -DF_CPU=$(F_CPU)UL$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -g$(DEBUG)$/;"	m
-CN58_AMB_INT	gpio.h	20;"	d
-CN58_AMB_INT_DIR	gpio.h	14;"	d
-CN58_AMB_INT_bp	gpio.h	8;"	d
-CN58_THER_INT	gpio.h	19;"	d
-CN58_THER_INT_DIR	gpio.h	13;"	d
-CN58_THER_INT_bp	gpio.h	7;"	d
 COFFCONVERT	Makefile	/^COFFCONVERT = $(OBJCOPY) --debugging$/;"	m
 COMPILER_AVR_H	avr_compiler.h	46;"	d
 CONFIG_SYSCLK_PSADIV	clksys.h	4;"	d
 CONFIG_SYSCLK_PSBCDIV	clksys.h	5;"	d
 CONSOLE_BAUDRATE	usart.h	8;"	d
-CONSOLE_BOOT_MODE	boot.h	16;"	d
+CONSOLE_BOOT_MODE	boot.h	22;"	d
 CONSOLE_DATA	usart.h	25;"	d
 CONSOLE_DRE_vect	usart.h	15;"	d
 CONSOLE_RXC_vect	usart.h	14;"	d
@@ -78,9 +61,6 @@ DEBUG_HOST	Makefile	/^DEBUG_HOST = localhost$/;"	m
 DEBUG_MFREQ	Makefile	/^DEBUG_MFREQ = $(F_CPU)$/;"	m
 DEBUG_PORT	Makefile	/^DEBUG_PORT = 4242$/;"	m
 DEBUG_UI	Makefile	/^DEBUG_UI = insight$/;"	m
-DPI_AMB_INT	gpio.h	23;"	d
-DPI_AMB_INT_DIR	gpio.h	17;"	d
-DPI_AMB_INT_bp	gpio.h	11;"	d
 EEPROM	eeprom_driver.h	72;"	d
 EEPROM_AtomicWritePage	eeprom_driver.c	/^void EEPROM_AtomicWritePage( uint8_t pageAddr )$/;"	f
 EEPROM_DRIVER_H	eeprom_driver.h	60;"	d
@@ -110,60 +90,12 @@ FLASH_PAGE_SIZE	sp_driver.h	68;"	d
 FLASH_STRING	avr_compiler.h	120;"	d
 FLASH_STRING_T	avr_compiler.h	121;"	d
 FORMAT	Makefile	/^FORMAT = ihex$/;"	m
+FW_TYPE_APP	boot.h	27;"	d
+FW_TYPE_BACKUP	boot.h	26;"	d
 F_CPU	Makefile	/^F_CPU = 32000000$/;"	m
 F_CPU	avr_compiler.h	51;"	d
 GDBINIT_FILE	Makefile	/^GDBINIT_FILE = __avr_gdbinit$/;"	m
 GENDEPFLAGS	Makefile	/^GENDEPFLAGS = -MMD -MP -MF .dep\/$(@F).d$/;"	m
-GPIO_ACTIVITY_LED	gpio.h	129;"	d
-GPIO_ACT_LED	gpio.h	123;"	d
-GPIO_FRU_LED_1	gpio.h	113;"	d
-GPIO_FRU_LED_2	gpio.h	114;"	d
-GPIO_FRU_LED_3	gpio.h	115;"	d
-GPIO_FRU_LED_BLUE	gpio.h	116;"	d
-GPIO_HEALTH_LED_AMBER	gpio.h	122;"	d
-GPIO_HEALTH_LED_GREEN	gpio.h	121;"	d
-GPIO_IDENTIFY_LED	gpio.h	130;"	d
-GPIO_IPMB_FAULT	gpio.h	135;"	d
-GPIO_IPMB_IDLE	gpio.h	133;"	d
-GPIO_IPMB_NORMAL	gpio.h	136;"	d
-GPIO_IPMB_READY	gpio.h	132;"	d
-GPIO_LED_1_DIR	gpio.h	105;"	d
-GPIO_LED_1_bp	gpio.h	97;"	d
-GPIO_LED_2_DIR	gpio.h	106;"	d
-GPIO_LED_2_FAIL	gpio.h	93;"	d
-GPIO_LED_2_FAIL_DIR	gpio.h	86;"	d
-GPIO_LED_2_FAIL_bp	gpio.h	75;"	d
-GPIO_LED_2_bp	gpio.h	98;"	d
-GPIO_LED_3_DIR	gpio.h	107;"	d
-GPIO_LED_3_STBY	gpio.h	94;"	d
-GPIO_LED_3_STBY_DIR	gpio.h	87;"	d
-GPIO_LED_3_STBY_bp	gpio.h	76;"	d
-GPIO_LED_3_bp	gpio.h	99;"	d
-GPIO_LED_ALL	gpio.h	126;"	d
-GPIO_LED_BLUE_DIR	gpio.h	108;"	d
-GPIO_LED_BLUE_bp	gpio.h	100;"	d
-GPIO_PW_12V_CP	gpio.h	90;"	d
-GPIO_PW_12V_CP_DIR	gpio.h	83;"	d
-GPIO_PW_12V_CP_bp	gpio.h	72;"	d
-GPIO_PW_12V_D	gpio.h	89;"	d
-GPIO_PW_12V_D_DIR	gpio.h	82;"	d
-GPIO_PW_12V_D_bp	gpio.h	71;"	d
-GPIO_PW_2	gpio.h	91;"	d
-GPIO_PW_2_DIR	gpio.h	84;"	d
-GPIO_PW_2_bp	gpio.h	73;"	d
-GPIO_PW_3	gpio.h	92;"	d
-GPIO_PW_3_DIR	gpio.h	85;"	d
-GPIO_PW_3_bp	gpio.h	74;"	d
-GPIO_PW_ALL	gpio.h	127;"	d
-GPIO_STATE_POWER_OFF	gpio.h	139;"	d
-GPIO_STATE_POWER_ON	gpio.h	138;"	d
-GPIO_STBY_LED	gpio.h	124;"	d
-GPIO_TEMP_vect	gpio.h	5;"	d
-HANDLE_SW	gpio.h	117;"	d
-HANDLE_SW_DIR	gpio.h	109;"	d
-HANDLE_SW_bp	gpio.h	101;"	d
-HA_DIR	gpio.h	64;"	d
-HA_bp	gpio.h	63;"	d
 HEXSIZE	Makefile	/^HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex$/;"	m
 HPM_ACTIVATE_FIRMWARE	ipmi.h	165;"	d
 HPM_FINISH_FIRMWARE_UPLOAD	ipmi.h	148;"	d
@@ -175,41 +107,9 @@ HPM_UPGRADE_ACTION_INVALID	ipmi.h	/^	HPM_UPGRADE_ACTION_INVALID = 0xff$/;"	e	enu
 HPM_UPGRADE_ACTION_PREPARE	ipmi.h	/^	HPM_UPGRADE_ACTION_PREPARE,$/;"	e	enum:eHpmfwupgUpgradeAction
 HPM_UPGRADE_ACTION_UPGRADE	ipmi.h	/^	HPM_UPGRADE_ACTION_UPGRADE,$/;"	e	enum:eHpmfwupgUpgradeAction
 HPM_UPLOAD_FIRMWARE_BLOCK	ipmi.h	129;"	d
-HZ	timer.h	5;"	d
 INLINE	avr_compiler.h	117;"	d
 INLINE	avr_compiler.h	138;"	d
-IPMC_BD_RESET	gpio.h	119;"	d
-IPMC_BD_RESET_DIR	gpio.h	111;"	d
-IPMC_BD_RESET_bp	gpio.h	103;"	d
-IPMC_FAULT_A	gpio.h	50;"	d
-IPMC_FAULT_A_DIR	gpio.h	47;"	d
-IPMC_FAULT_A_bp	gpio.h	44;"	d
-IPMC_FAULT_B	gpio.h	60;"	d
-IPMC_FAULT_B_DIR	gpio.h	57;"	d
-IPMC_FAULT_B_bp	gpio.h	54;"	d
-IPMC_IN0_DIR	gpio.h	33;"	d
-IPMC_IN0_bp	gpio.h	26;"	d
-IPMC_IN1_DIR	gpio.h	34;"	d
-IPMC_IN1_bp	gpio.h	27;"	d
-IPMC_OUT0	gpio.h	40;"	d
-IPMC_OUT0_DIR	gpio.h	35;"	d
-IPMC_OUT0_bp	gpio.h	28;"	d
-IPMC_OUT1_DIR	gpio.h	36;"	d
-IPMC_OUT1_bp	gpio.h	29;"	d
-IPMC_READY_A	gpio.h	49;"	d
-IPMC_READY_A_DIR	gpio.h	46;"	d
-IPMC_READY_A_bp	gpio.h	43;"	d
-IPMC_READY_B	gpio.h	59;"	d
-IPMC_READY_B_DIR	gpio.h	56;"	d
-IPMC_READY_B_bp	gpio.h	53;"	d
-IPMC_RESTART	gpio.h	118;"	d
-IPMC_RESTART_DIR	gpio.h	110;"	d
-IPMC_RESTART_bp	gpio.h	102;"	d
-IPS_AMB_INT	gpio.h	22;"	d
-IPS_AMB_INT_DIR	gpio.h	16;"	d
-IPS_AMB_INT_bp	gpio.h	10;"	d
 ISR	avr_compiler.h	106;"	d
-ISR	timer.c	/^ISR(TCC0_OVF_vect)$/;"	f
 ISR	usart.c	/^ISR(CONSOLE_DRE_vect)$/;"	f
 ISR	usart.c	/^ISR(CONSOLE_RXC_vect)$/;"	f
 ISR	usart.c	/^ISR(PAYLOAD_DRE_vect)$/;"	f
@@ -243,14 +143,9 @@ MSG_LINKING	Makefile	/^MSG_LINKING = Linking:$/;"	m
 MSG_SIZE_AFTER	Makefile	/^MSG_SIZE_AFTER = Size after:$/;"	m
 MSG_SIZE_BEFORE	Makefile	/^MSG_SIZE_BEFORE = Size before: $/;"	m
 MSG_SYMBOL_TABLE	Makefile	/^MSG_SYMBOL_TABLE = Creating Symbol Table:$/;"	m
-N48V_ALARM_DIR	gpio.h	78;"	d
-N48V_ALARM_bp	gpio.h	67;"	d
 NETFN_GROUP_EXTENSION_REQ	ipmi.h	85;"	d
 NETFN_GROUP_EXTENSION_RESP	ipmi.h	86;"	d
 NM	Makefile	/^NM = avr-nm$/;"	m
-NP4_AMB_INT	gpio.h	21;"	d
-NP4_AMB_INT_DIR	gpio.h	15;"	d
-NP4_AMB_INT_bp	gpio.h	9;"	d
 NVM_CMD_APP_CRC_gc	sp_driver.S	/^#define NVM_CMD_APP_CRC_gc (0x38<<0)	\/\/ Generate Application section CRC$/;"	d
 NVM_CMD_BOOT_CRC_gc	sp_driver.S	/^#define NVM_CMD_BOOT_CRC_gc (0x39<<0)	\/\/ Generate Boot Section CRC$/;"	d
 NVM_CMD_ERASE_APP_PAGE_gc	sp_driver.S	/^#define NVM_CMD_ERASE_APP_PAGE_gc (0x22<<0)	\/\/ Erase Application Section page$/;"	d
@@ -285,12 +180,11 @@ OBJDUMP	Makefile	/^OBJDUMP = avr-objdump$/;"	m
 OPT	Makefile	/^OPT = 1$/;"	m
 PAGESIZE	boot.h	6;"	d
 PAYLOAD_BAUDRATE	usart.h	9;"	d
-PAYLOAD_BOOT_MODE	boot.h	15;"	d
+PAYLOAD_BOOT_MODE	boot.h	21;"	d
 PAYLOAD_DATA	usart.h	26;"	d
 PAYLOAD_DRE_vect	usart.h	17;"	d
 PAYLOAD_RXC_vect	usart.h	16;"	d
 PAYLOAD_USART	usart.h	12;"	d
-PER_10HZ	timer.h	4;"	d
 PGM_READ_BYTE	avr_compiler.h	123;"	d
 PGM_READ_WORD	avr_compiler.h	124;"	d
 PICMG_ID	ipmi.h	88;"	d
@@ -377,12 +271,9 @@ _MEMATTR	avr_compiler.h	75;"	d
 _MEMATTR	avr_compiler.h	77;"	d
 __BOOT_H__	boot.h	2;"	d
 __CLKSYS_H__	clksys.h	2;"	d
-__DEBUG__	ipmi.h	4;"	d
-__GPIO_H__	gpio.h	2;"	d
 __IPMI_H__	ipmi.h	2;"	d
 __IRQ_H__	irq.h	2;"	d
 __TERMINAL_H__	terminal.h	2;"	d
-__TIMER_H__	timer.h	2;"	d
 __USART_H__	usart.h	2;"	d
 __WS_H__	ws.h	2;"	d
 activate_firmware_req	ipmi.h	/^typedef struct activate_firmware_req {$/;"	s
@@ -396,10 +287,10 @@ block_number	ipmi.c	/^uint8_t block_number = 0;$/;"	v
 block_number	ipmi.h	/^	uint8_t block_number;$/;"	m	struct:upload_firmware_block_req
 boot_finish_write_flash	boot.c	/^boot_finish_write_flash(uint32_t size)$/;"	f
 boot_get_mode	boot.c	/^boot_get_mode(void)$/;"	f
-boot_init	boot.c	/^boot_init(void)$/;"	f
-boot_init_write_flash	boot.c	/^boot_init_write_flash(uint8_t section)$/;"	f
+boot_init_write_flash	boot.c	/^boot_init_write_flash(void)$/;"	f
 boot_jump_app_section	boot.c	/^boot_jump_app_section(void)$/;"	f
-boot_reset_ipmc	boot.c	/^boot_reset_ipmc(void)$/;"	f
+boot_mode	main.c	/^uint8_t boot_mode;$/;"	v
+boot_recovery_fw	boot.c	/^boot_recovery_fw(void)$/;"	f
 boot_set_mode	boot.c	/^boot_set_mode(uint8_t mode)$/;"	f
 boot_write_flash	boot.c	/^boot_write_flash(uint8_t *data, uint32_t size)$/;"	f
 bridge	ipmi.h	/^	uint8_t   bridge:2,$/;"	m	struct:ipmi_terminal_mode_response
@@ -455,7 +346,6 @@ finish_firmware_upload_req	ipmi.h	/^typedef struct finish_firmware_upload_req{$/
 finish_firmware_upload_req_t	ipmi.h	/^} finish_firmware_upload_req_t;$/;"	t	typeref:struct:finish_firmware_upload_req
 finish_firmware_upload_resp	ipmi.h	/^typedef struct finish_firmware_upload_resp{$/;"	s
 finish_firmware_upload_resp_t	ipmi.h	/^} finish_firmware_upload_resp_t;$/;"	t	typeref:struct:finish_firmware_upload_resp
-gpio_init	gpio.c	/^gpio_init(void)$/;"	f
 hdr	ipmi.h	/^	pkt_hdr_t       hdr;$/;"	m	struct:ipmi_pkt
 image_length	ipmi.h	/^	uint8_t image_length[4];$/;"	m	struct:finish_firmware_upload_req
 initiate_upgrade_action_req	ipmi.h	/^typedef struct initiate_upgrade_action_req{$/;"	s
@@ -469,7 +359,6 @@ ipmi_cmd_resp_t	ipmi.h	/^} ipmi_cmd_resp_t;$/;"	t	typeref:struct:ipmi_cmd_resp
 ipmi_completion_function	ipmi.h	/^	void (*ipmi_completion_function)( void );$/;"	m	struct:ipmi_ws
 ipmi_pkt	ipmi.h	/^typedef struct ipmi_pkt {$/;"	s
 ipmi_pkt_t	ipmi.h	/^} ipmi_pkt_t;$/;"	t	typeref:struct:ipmi_pkt
-ipmi_process_pkt	ipmi.c	/^ipmi_process_pkt( ipmi_ws_t *ws )$/;"	f
 ipmi_process_request	ipmi.c	/^ipmi_process_request( ipmi_pkt_t *pkt )$/;"	f
 ipmi_terminal_mode_hdr	ipmi.h	/^typedef struct ipmi_terminal_mode_hdr {$/;"	s
 ipmi_terminal_mode_hdr_t	ipmi.h	/^} ipmi_terminal_mode_hdr_t;$/;"	t	typeref:struct:ipmi_terminal_mode_hdr
@@ -480,7 +369,6 @@ ipmi_terminal_mode_response_t	ipmi.h	/^} ipmi_terminal_mode_response_t;$/;"	t	ty
 ipmi_ws	ipmi.h	/^typedef struct ipmi_ws {$/;"	s
 ipmi_ws_t	ipmi.h	/^} ipmi_ws_t;$/;"	t	typeref:struct:ipmi_ws
 irqflags_t	irq.h	/^typedef uint8_t irqflags_t;$/;"	t
-lbolt	timer.c	/^unsigned long lbolt = 0;$/;"	v
 len_in	ipmi.h	/^	uint8_t len_in;        \/* lenght of incoming pkt *\/$/;"	m	struct:ipmi_ws
 len_out	ipmi.h	/^	uint8_t len_out;       \/* length of outgoing pkt *\/$/;"	m	struct:ipmi_ws
 len_rx	ipmi.h	/^	uint8_t len_rx;$/;"	m	struct:ipmi_ws
@@ -545,13 +433,6 @@ sysclk_port_id	clksys.h	/^enum sysclk_port_id {$/;"	g
 tHpmfwupgUpgradeAction	ipmi.h	/^}  tHpmfwupgUpgradeAction;$/;"	t	typeref:enum:eHpmfwupgUpgradeAction
 terminal_process_pkt	terminal.c	/^terminal_process_pkt( ipmi_ws_t *ws )$/;"	f
 terminal_send_pkt	terminal.c	/^terminal_send_pkt( ipmi_ws_t *ws )$/;"	f
-timer_cfg_clk_src	timer.c	/^void timer_cfg_clk_src( volatile TC0_t * tc, TC_CLKSEL_t clockSelection )$/;"	f
-timer_cfg_wgm	timer.c	/^void timer_cfg_wgm( volatile TC0_t * tc, TC_WGMODE_t wgm )$/;"	f
-timer_clear_ovf_flag	timer.c	8;"	d	file:
-timer_init	timer.c	/^void timer_init(void)$/;"	f
-timer_set_count	timer.c	7;"	d	file:
-timer_set_ovf_int_lvl	timer.c	/^void timer_set_ovf_int_lvl( volatile TC0_t * tc, TC_OVFINTLVL_t intLevel )$/;"	f
-timer_set_period	timer.c	6;"	d	file:
 upgrade_action	ipmi.h	/^	uint8_t upgrade_action;$/;"	m	struct:initiate_upgrade_action_req
 upload_firmware_block_req	ipmi.h	/^typedef struct upload_firmware_block_req{$/;"	s
 upload_firmware_block_req_t	ipmi.h	/^} upload_firmware_block_req_t;$/;"	t	typeref:struct:upload_firmware_block_req
@@ -568,10 +449,9 @@ usart_init	usart.c	/^usart_init(void)$/;"	f
 usart_init_interrupt	usart.c	/^void usart_init_interrupt(uint8_t buf_type, USART_t * usart, USART_DREINTLVL_t dreIntLevel)$/;"	f
 usart_init_rs232	usart.c	/^void usart_init_rs232(USART_t *usart, const usart_rs232_options_t *opt)$/;"	f
 usart_rs232_options_t	usart.h	/^}usart_rs232_options_t;$/;"	t	typeref:struct:__anon1
-usart_rx_buf_data_available	usart.c	/^bool usart_rx_buf_data_available(uint8_t buf_type)$/;"	f
+usart_rx_buf_data_available	usart.c	/^usart_rx_buf_data_available(uint8_t buf_type)$/;"	f
 usart_rx_buf_get_byte	usart.c	/^uint8_t usart_rx_buf_get_byte(uint8_t buf_type)$/;"	f
-usart_rx_complete	usart.c	/^bool usart_rx_complete(uint8_t buf_type)$/;"	f
-usart_rx_data_available	usart.c	/^usart_rx_data_available(void)$/;"	f
+usart_rx_complete	usart.c	/^uint8_t usart_rx_complete(uint8_t buf_type)$/;"	f
 usart_rx_is_complete	usart.c	/^uint8_t usart_rx_is_complete(USART_t *_usart)$/;"	f
 usart_set_baudrate	usart.c	/^void usart_set_baudrate(USART_t *usart, uint32_t baud, uint32_t cpu_hz)$/;"	f
 usart_set_console	usart.c	/^usart_set_console(uint8_t buf_type)$/;"	f

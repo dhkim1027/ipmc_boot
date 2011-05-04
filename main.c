@@ -49,27 +49,11 @@ print_boot_mode_msg(uint8_t count)
 	d_sendchar('\r');
 }
 
+uint8_t boot_mode;
+
 void 
 print_boot_mode_menu(void)
 {
-	//Recorvery F/W
-	d_sendchar('R');	
-	d_sendchar('-');	
-	d_sendchar('R');	
-	d_sendchar('e');	
-	d_sendchar('c');	
-	d_sendchar('o');	
-	d_sendchar('r');	
-	d_sendchar('v');	
-	d_sendchar('e');	
-	d_sendchar('r');	
-	d_sendchar('y');	
-	d_sendchar(' ');	
-	d_sendchar('F');	
-	d_sendchar('/');	
-	d_sendchar('W');	
-	d_sendchar('\r');	
-	d_sendchar('\n');	
 
 	//run application
 	d_sendchar('A');	
@@ -91,6 +75,20 @@ print_boot_mode_menu(void)
 	d_sendchar('n');	
 	d_sendchar('\r');	
 	d_sendchar('\n');	
+
+
+	//Help
+	d_sendchar('H');	
+	d_sendchar('-');	
+	d_sendchar('H');	
+	d_sendchar('e');	
+	d_sendchar('l');	
+	d_sendchar('p');	
+	d_sendchar('\r');	
+	d_sendchar('\n');	
+
+	if(boot_mode == PAYLOAD_BOOT_MODE)
+		return;
 
 	//Programming Mode
 	d_sendchar('P');
@@ -114,18 +112,26 @@ print_boot_mode_menu(void)
 	d_sendchar('\r');
 	d_sendchar('\n');
 
-	//Help
-	d_sendchar('H');	
+	//Recorvery F/W
+	d_sendchar('R');	
 	d_sendchar('-');	
-	d_sendchar('H');	
+	d_sendchar('R');	
 	d_sendchar('e');	
-	d_sendchar('l');	
-	d_sendchar('p');	
+	d_sendchar('c');	
+	d_sendchar('o');	
+	d_sendchar('r');	
+	d_sendchar('v');	
+	d_sendchar('e');	
+	d_sendchar('r');	
+	d_sendchar('y');	
+	d_sendchar(' ');	
+	d_sendchar('F');	
+	d_sendchar('/');	
+	d_sendchar('W');	
 	d_sendchar('\r');	
 	d_sendchar('\n');	
 }
 
-uint8_t boot_mode;
 
 void
 print_cli_prompt(void)
@@ -168,6 +174,20 @@ run_cli_boot_mode(void)
 			d_sendchar('\n');
 			boot_jump_app_section();
 			break;
+		case 'E':
+			d_sendchar('e');
+			d_sendchar('r');
+			d_sendchar('a');
+			d_sendchar('s');
+			d_sendchar('e');
+			d_sendchar(' ');
+			d_sendchar('a');
+			d_sendchar('p');
+			d_sendchar('p');
+			d_sendchar('\r');
+			d_sendchar('\n');
+			boot_erase_flash(FW_TYPE_APP);
+			break;
 		case 'P':
 			d_sendchar('P');
 			d_sendchar('r');
@@ -200,17 +220,19 @@ run_cli_boot_mode(void)
 			d_sendchar('y');	
 			d_sendchar('\r');
 			d_sendchar('\n');
+			boot_recovery_fw();
+			boot_jump_app_section();
 			break;
 		case 'H':
 		case 'h':
 			print_boot_mode_menu();
+			d_sendchar('\r');
+			d_sendchar('\n');
 			break;
 		default:
 			break;;
 	}
 	print_cli_prompt();
-	d_sendchar('\r');
-	d_sendchar('\n');
 	return 0;
 }
 
@@ -239,11 +261,14 @@ main(void)
 	d_sendchar('\n');
 	d_sendchar('\r');
 	d_sendchar('\n');
+	d_sendchar('\r');
+	d_sendchar('\n');
 
 	boot_mode = boot_get_mode();
 
 	if(boot_mode == PAYLOAD_BOOT_MODE){
-		boot_set_mode(APP_MODE);
+	//	boot_set_mode(CONSOLE_BOOT_MODE);
+		boot_init_write_flash();
 		usart_set_payload(PAYLOAD_DATA);
 		print_cli_prompt();
 		while(1){
