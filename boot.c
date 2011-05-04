@@ -106,26 +106,53 @@ void
 boot_recovery_fw(void)
 {
 	unsigned long i;
+
+	d_sendchar('E');
+	d_sendchar('r');
+	d_sendchar('a');
+	d_sendchar('s');
+	d_sendchar('e');
+	d_sendchar('\r');
+	d_sendchar('\n');
+
+	for(i=APP_BLK_START;i<APP_BLK_END;i++){
+		SP_EraseApplicationPage(i * FLASH_PAGE_SIZE);
+		SP_WaitForSPM();
+		d_sendchar('#');
+	}
+
+	d_sendchar('\r');
+	d_sendchar('\n');
+	d_sendchar('O');
+	d_sendchar('K');
+	d_sendchar('.');
+	d_sendchar('\r');
+	d_sendchar('\n');
+
+
+	d_sendchar('W');
+	d_sendchar('r');
+	d_sendchar('i');
+	d_sendchar('t');
+	d_sendchar('e');
+	d_sendchar('\r');
+	d_sendchar('\n');
 	for(i=BACKUP_BLK_START;i<BACKUP_BLK_END;i++){
 		SP_ReadFlashPage(read_buffer, i * FLASH_PAGE_SIZE);
 
 		SP_LoadFlashPage(read_buffer);
-		SP_EraseWriteApplicationPage((i - BACKUP_BLK_START) * FLASH_PAGE_SIZE);
+	//	SP_EraseWriteApplicationPage( (i - BACKUP_BLK_START) * FLASH_PAGE_SIZE );
+		SP_WriteApplicationPage( (i - BACKUP_BLK_START) * FLASH_PAGE_SIZE );
 		SP_WaitForSPM();
 
 		d_sendchar('#');
 	}
+
 	d_sendchar('\r');
 	d_sendchar('\n');
 
-	d_sendchar('c');
-	d_sendchar('o');
-	d_sendchar('m');
-	d_sendchar('p');
-	d_sendchar('l');
-	d_sendchar('e');
-	d_sendchar('t');
-	d_sendchar('e');
+	d_sendchar('O');
+	d_sendchar('K');
 	d_sendchar('.');
 	d_sendchar('\r');
 	d_sendchar('\n');
@@ -134,6 +161,7 @@ boot_recovery_fw(void)
 void  
 boot_erase_flash(uint8_t fw_type)
 {
+#if 0
 	uint32_t page_start, page_end;
 	uint32_t i;
 
@@ -149,4 +177,5 @@ boot_erase_flash(uint8_t fw_type)
 		SP_EraseApplicationPage(i * FLASH_PAGE_SIZE);
 		SP_WaitForSPM();
 	}
+#endif
 }

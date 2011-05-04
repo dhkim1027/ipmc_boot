@@ -285,6 +285,7 @@ barrier	irq.h	6;"	d
 baudrate	usart.h	/^	uint32_t baudrate;$/;"	m	struct:__anon1
 block_number	ipmi.c	/^uint8_t block_number = 0;$/;"	v
 block_number	ipmi.h	/^	uint8_t block_number;$/;"	m	struct:upload_firmware_block_req
+boot_erase_flash	boot.c	/^boot_erase_flash(uint8_t fw_type)$/;"	f
 boot_finish_write_flash	boot.c	/^boot_finish_write_flash(uint32_t size)$/;"	f
 boot_get_mode	boot.c	/^boot_get_mode(void)$/;"	f
 boot_init_write_flash	boot.c	/^boot_init_write_flash(void)$/;"	f

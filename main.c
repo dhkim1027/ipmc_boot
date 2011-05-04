@@ -174,6 +174,7 @@ run_cli_boot_mode(void)
 			d_sendchar('\n');
 			boot_jump_app_section();
 			break;
+#if 0
 		case 'E':
 			d_sendchar('e');
 			d_sendchar('r');
@@ -188,6 +189,7 @@ run_cli_boot_mode(void)
 			d_sendchar('\n');
 			boot_erase_flash(FW_TYPE_APP);
 			break;
+#endif
 		case 'P':
 			d_sendchar('P');
 			d_sendchar('r');
@@ -257,8 +259,6 @@ main(void)
 
 	cpu_irq_enable();
 
-	d_sendchar('\r');
-	d_sendchar('\n');
 	d_sendchar('\r');
 	d_sendchar('\n');
 	d_sendchar('\r');
