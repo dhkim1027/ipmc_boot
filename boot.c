@@ -9,7 +9,6 @@
 uint8_t write_buffer[FLASH_PAGE_SIZE];
 uint8_t read_buffer[FLASH_PAGE_SIZE];
 
-static unsigned long address = 0;
 static uint32_t page_num = 0;
 static uint32_t bytecount = 0;
 static uint32_t write_buffer_count = 0;
@@ -159,23 +158,24 @@ boot_recovery_fw(void)
 }
 
 void  
-boot_erase_flash(uint8_t fw_type)
+boot_backup_fw(void)
 {
-#if 0
-	uint32_t page_start, page_end;
-	uint32_t i;
+	unsigned long i;
 
-	if(fw_type == FW_TYPE_APP){
-		page_start = APP_BLK_START;	
-		page_end   = APP_BLK_END;	
-	}else{
-		page_start = BACKUP_BLK_START;	
-		page_end   = BACKUP_BLK_END;	
-	}
-
-	for(i=page_start;i<page_end;i++){
+	// Erase
+	for(i=BACKUP_BLK_START;i<BACKUP_BLK_END;i++){
 		SP_EraseApplicationPage(i * FLASH_PAGE_SIZE);
 		SP_WaitForSPM();
+	//	d_sendchar('#');
 	}
-#endif
+
+	// Write
+	for(i=APP_BLK_START;i<APP_BLK_END;i++){
+		SP_ReadFlashPage(read_buffer, i * FLASH_PAGE_SIZE);
+		SP_LoadFlashPage(read_buffer);
+		SP_WriteApplicationPage( (i + BACKUP_BLK_START) * FLASH_PAGE_SIZE );
+		SP_WaitForSPM();
+	//	d_sendchar('#');
+	}
+
 }

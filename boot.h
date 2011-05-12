@@ -38,6 +38,6 @@ void  boot_write_flash(uint8_t *data, uint32_t size);
 void  boot_finish_write_flash(uint32_t size);
 void  boot_jump_app_section(void);
 void  boot_recovery_fw(void);
-void  boot_erase_flash(uint8_t fw_type);
+void  boot_backup_fw(void);
 
 #endif

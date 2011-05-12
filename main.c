@@ -2,6 +2,7 @@
 #include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include "version.h"
 #include "irq.h"
 #include "clksys.h"
 #include "ipmi.h"
@@ -130,6 +131,18 @@ print_boot_mode_menu(void)
 	d_sendchar('W');	
 	d_sendchar('\r');	
 	d_sendchar('\n');	
+
+	d_sendchar('V');	
+	d_sendchar('-');	
+	d_sendchar('V');	
+	d_sendchar('e');	
+	d_sendchar('r');	
+	d_sendchar('s');	
+	d_sendchar('i');	
+	d_sendchar('o');	
+	d_sendchar('n');	
+	d_sendchar('\r');	
+	d_sendchar('\n');	
 }
 
 
@@ -231,6 +244,14 @@ run_cli_boot_mode(void)
 			d_sendchar('\r');
 			d_sendchar('\n');
 			break;
+		case 'v':
+		case 'V':
+			d_sendchar(VERSION_MAJ + '0');
+			d_sendchar('.');
+			d_sendchar(VERSION_MIN + '0');
+			d_sendchar('\r');
+			d_sendchar('\n');
+			break;
 		default:
 			break;;
 	}
@@ -279,7 +300,7 @@ main(void)
 
 	if(boot_mode == APP_MODE){
 		while(count){
-			print_boot_mode_msg(count);
+			print_boot_mode_msg(count-1);
 			if(usart_rx_buf_data_available(CONSOLE_DATA)){
 				d_sendchar('\r');
 				d_sendchar('\n');
