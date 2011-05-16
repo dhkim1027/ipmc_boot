@@ -82,8 +82,48 @@ typedef struct ipmi_ws {
 #define CC_NORMAL       0x00    /* Command Completed Normally. */
 #define CC_INVALID_CMD      0xC1    /* Invalid Command. Used to */
 
+#define NETFN_APP_REQ       0x06
+#define NETFN_APP_RESP      0x07
 #define NETFN_GROUP_EXTENSION_REQ   0x2C
 #define NETFN_GROUP_EXTENSION_RESP  0x2D
+
+/*----------------------------------------------------------------------*/
+/*          Get Device ID*/
+/*----------------------------------------------------------------------*/
+#define IPMI_CMD_GET_DEVICE_ID  0x01
+
+#define DEV_SUP_CHASSIS     0x80    
+#define DEV_SUP_BRIDGE      0x40    
+#define DEV_SUP_IPMB_EVENT_GEN  0x20                       
+#define DEV_SUP_IPMB_EVENT_RCV  0x10   
+#define DEV_SUP_FRU_INVENTORY   0x08   
+#define DEV_SUP_SEL     0x04    
+#define DEV_SUP_SDR_REPOSITORY  0x02 
+#define DEV_SUP_SENSOR      0x01    
+
+#define DEV_STATUS_READY        0
+#define DEV_STATUS_NOT_READY        1
+
+typedef struct generic_cmd_req {
+	    uint8_t command;
+} generic_cmd_req_t;
+
+typedef struct get_device_id_cmd_resp {
+	uint8_t completion_code;    /* Completion Code */
+	uint8_t device_id;      /* Device ID. 00h = unspecified. */
+	uint8_t device_revision:4,
+			:3,
+			device_sdr_provided:1;
+	uint8_t major_fw_rev:7,
+			device_available:1;
+	uint8_t minor_fw_rev;
+	uint8_t ipmi_version;
+	uint8_t add_dev_support;
+	uint8_t manuf_id[3];
+	uint8_t product_id[2];
+	uint8_t aux_fw_rev[4];
+} get_device_id_cmd_resp_t;
+
 
 #define PICMG_ID        0
 /*----------------------------------------------------------------------*/

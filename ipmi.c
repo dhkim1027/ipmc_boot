@@ -37,11 +37,6 @@ picmg_hpm_upload_firmware_block( ipmi_pkt_t *pkt )
 	if(block_number != req->block_number){
 		resp->completion_code = 0x82;
 		pkt->hdr.resp_data_len = 1;
-
-		sendchar('E');
-		sendchar(block_number);
-		sendchar('\r');
-		sendchar('\n');
 		return;
 	}
 
@@ -67,7 +62,6 @@ picmg_hpm_upload_firmware_block( ipmi_pkt_t *pkt )
 void
 picmg_hpm_finish_firmware_upload( ipmi_pkt_t *pkt )
 {
-//	ipmi_ws_t *ws = (ipmi_ws_t *)pkt->hdr.ws;
 	finish_firmware_upload_req_t *req = ( finish_firmware_upload_req_t *)pkt->req;
 	finish_firmware_upload_resp_t *resp = ( finish_firmware_upload_resp_t *)pkt->resp;
 	uint32_t image_length = 0;
@@ -87,14 +81,13 @@ picmg_hpm_finish_firmware_upload( ipmi_pkt_t *pkt )
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-//	ws->ipmi_completion_function = boot_jump_app_section;
 }
 
 void  
 activate_fw_function(void)
 {
+//	boot_backup_fw();
 	boot_jump_app_section();
-	boot_backup_fw();
 }
 
 void
@@ -107,17 +100,13 @@ picmg_hpm_activate_firmware( ipmi_pkt_t *pkt )
 	resp->picmg_id = PICMG_ID;
 
 	pkt->hdr.resp_data_len = 1;
-	ws->ipmi_completion_function = activate_fw_function;
+	ws->ipmi_completion_function = boot_jump_app_section;
 }
 
 void
 picmg_process_command( ipmi_pkt_t *pkt )
 {
 	picmg_cmd_resp_t *resp = ( picmg_cmd_resp_t* )pkt->resp;
-
-	uint8_t hi_nibble, lo_nibble;
-	hi_nibble = pkt->req->command >> 4;
-	lo_nibble = pkt->req->command & 0x0f;
 
 	switch( pkt->req->command ) {
 		case HPM_INITIATE_UPGRADE_ACTION:
@@ -141,12 +130,64 @@ picmg_process_command( ipmi_pkt_t *pkt )
 }
 
 void
+ipmi_get_device_id_cmd( ipmi_pkt_t *pkt )
+{
+	get_device_id_cmd_resp_t *gdi_resp = (get_device_id_cmd_resp_t *)(pkt->resp);
+
+	gdi_resp->completion_code = CC_NORMAL;
+	gdi_resp->device_id = 0x0;
+	gdi_resp->device_sdr_provided = 1;  /* 1 = device provides Device SDRs */
+	gdi_resp->device_revision = 0;      /* 4 bit field, binary encoded */
+	gdi_resp->device_available = 0;
+	gdi_resp->major_fw_rev = 3;
+	gdi_resp->minor_fw_rev = 3;
+	gdi_resp->ipmi_version = 0x02;
+	gdi_resp->add_dev_support =
+		DEV_SUP_IPMB_EVENT_GEN |
+		DEV_SUP_FRU_INVENTORY |
+		DEV_SUP_SDR_REPOSITORY |
+		DEV_SUP_SENSOR;
+
+	gdi_resp->manuf_id[0] = 0xf9;
+	gdi_resp->manuf_id[1] = 0x19;
+	gdi_resp->manuf_id[2] = 0x0;
+	gdi_resp->product_id[0] = 0x01;
+	gdi_resp->product_id[1] = 0x00;
+	gdi_resp->aux_fw_rev[0] = 0x0;
+	gdi_resp->aux_fw_rev[1] = 0x0;
+	gdi_resp->aux_fw_rev[2] = 0x0;
+	gdi_resp->aux_fw_rev[3] = 0x0;
+	pkt->hdr.resp_data_len = 15;
+}
+
+void
+ipmi_process_app_req( ipmi_pkt_t *pkt )
+{
+	ipmi_cmd_resp_t *resp = ( ipmi_cmd_resp_t*)(pkt->resp);
+
+	switch( pkt->req->command )
+	{
+		case IPMI_CMD_GET_DEVICE_ID:
+			ipmi_get_device_id_cmd( pkt );
+			break;
+		default:
+			resp->completion_code = CC_INVALID_CMD;
+			pkt->hdr.resp_data_len = 0;
+			break;
+	}
+}
+
+
+void
 ipmi_process_request( ipmi_pkt_t *pkt )
 {
 	ipmi_cmd_resp_t *resp = ( ipmi_cmd_resp_t *)(pkt->resp);
 	resp->completion_code = CC_NORMAL;
 
 	switch( pkt->hdr.netfn ) {
+		case NETFN_APP_REQ:
+			ipmi_process_app_req( pkt );
+			break;
 		case NETFN_GROUP_EXTENSION_REQ:
 			picmg_process_command( pkt );
 			break;
