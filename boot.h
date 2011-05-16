@@ -26,10 +26,18 @@
 #define FW_TYPE_BACKUP	0
 #define FW_TYPE_APP		1
 
+// Version
+
 #define BOOT_PAGE_ADDR		0
 
 #define BOOT_MODE_ADDR		1
 #define BOOT_FW_TYPE_ADDR	2
+#define FW_MAJ_VER_ADDR		3
+#define FW_MIN_VER_ADDR		4
+#define BACKUP_MAJ_VER_ADDR	5
+#define BACKUP_MIN_VER_ADDR	6
+#define BOOT_MAJ_VER_ADDR	7
+#define BOOT_MIN_VER_ADDR	8
 
 uint8_t boot_get_mode(void);
 void  boot_set_mode(uint8_t mode);

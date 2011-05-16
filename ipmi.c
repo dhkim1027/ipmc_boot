@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "eeprom_driver.h"
 #include "boot.h"
 #include "ipmi.h"
 #include "ws.h"
@@ -139,8 +140,8 @@ ipmi_get_device_id_cmd( ipmi_pkt_t *pkt )
 	gdi_resp->device_sdr_provided = 1;  /* 1 = device provides Device SDRs */
 	gdi_resp->device_revision = 0;      /* 4 bit field, binary encoded */
 	gdi_resp->device_available = 0;
-	gdi_resp->major_fw_rev = 3;
-	gdi_resp->minor_fw_rev = 3;
+	gdi_resp->major_fw_rev = EEPROM_ReadByte(0, FW_MAJ_VER_ADDR);
+	gdi_resp->minor_fw_rev = EEPROM_ReadByte(0, FW_MIN_VER_ADDR);
 	gdi_resp->ipmi_version = 0x02;
 	gdi_resp->add_dev_support =
 		DEV_SUP_IPMB_EVENT_GEN |
